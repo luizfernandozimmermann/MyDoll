@@ -1,8 +1,6 @@
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
 from save_and_load import *
 from kivy.uix.label import Label
-from kivy.uix.button import Button
 from kivy.app import App
 
 
@@ -128,7 +126,7 @@ class Feiras_scroll(BoxLayout):
         self.clear_widgets(self.children[1:])
         ordem = sorted(self.conteudo["feiras"], key=lambda d: d['data_feira']) 
         ordem.reverse()
-        for feira in self.conteudo["feiras"]:
+        for feira in ordem:
             if feira["ativo"] == 1:
                 self.add_widget(Caixa_feira(
                     id_feira= feira["id"],

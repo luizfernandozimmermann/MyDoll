@@ -24,6 +24,8 @@ class Scroll_financas_atual(BoxLayout):
 
         self.clear_widgets(self.children[2:])
         conteudo = self.conteudo["financas_atual"]
+        conteudo = sorted(conteudo, key=lambda d: d['data']) 
+        conteudo.reverse()
 
         for compras in conteudo:
             if compras["ativo"] == 1:
@@ -125,7 +127,6 @@ class Caixa_financas_atual(BoxLayout):
 
 
 
-
 class Scroll_financas_historico(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -134,8 +135,6 @@ class Scroll_financas_historico(BoxLayout):
 #
     def atualizar(self):
         self.conteudo = App.get_running_app().conteudo
-
-        self.clear_widgets()
 
         self.historico = {}
         for container in self.conteudo["historico_financas"]:
@@ -163,7 +162,6 @@ class Scroll_financas_historico(BoxLayout):
                 ))
 
     def filtro_atualizar(self, mes, ano):
-        print(mes)
         self.atualizar()
         self.clear_widgets()
         if mes == "Todos":

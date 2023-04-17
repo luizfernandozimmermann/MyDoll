@@ -78,7 +78,8 @@ class Historico_scroll(BoxLayout):
         self.add_widget(Button(height=1, size_hint_y=None, background_color=(0, 0, 0, 0)))
 
         self.historico = self.conteudo["historico_agenda"]
-        for venda in self.historico:
+        self.ordem = sorted(self.conteudo["historico_agenda"], key=lambda d: d['data_entrega']) 
+        for venda in self.ordem:
             subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
             self.add_widget(Caixa_historico(
                 data= venda["data_entrega"],
@@ -96,12 +97,13 @@ class Historico_scroll(BoxLayout):
         self.clear_widgets()
         self.add_widget(Button(height=1, size_hint_y=None, background_color=(0, 0, 0, 0)))
         
+        self.ordem = sorted(self.conteudo["historico_agenda"], key=lambda d: d['data_entrega']) 
 
         if mes == "Todos":
             if ano == "Todos":
                 self.atualizar()
             else:
-                for venda in self.conteudo["historico_agenda"]:
+                for venda in self.ordem:
                     if venda["data_entrega"][:4] == ano:
                         subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
                         self.add_widget(Caixa_historico(
@@ -115,7 +117,7 @@ class Historico_scroll(BoxLayout):
                         ))
         else:
             if ano == "Todos":
-                for venda in self.conteudo["historico_agenda"]:
+                for venda in self.ordem:
                     if venda["data_entrega"][5:7] == mes:
                         subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
                         self.add_widget(Caixa_historico(
@@ -128,7 +130,7 @@ class Historico_scroll(BoxLayout):
                             descricao= venda["descricao"]
                         ))
             else:
-                for venda in self.conteudo["historico_agenda"]:
+                for venda in self.ordem:
                     if venda["data_entrega"][8:] == mes and venda["data_entrega"][:4] == ano:
                         subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
                         self.add_widget(Caixa_historico(
@@ -170,7 +172,8 @@ class Historico_scroll_feiras(BoxLayout):
         self.add_widget(Button(height=1, size_hint_y=None, background_color=(0, 0, 0, 0)))
 
         self.feiras_historico = self.conteudo["historico_feiras"]
-        for feira in self.feiras_historico:
+        self.ordem = sorted(self.conteudo["historico_feiras"], key=lambda d: d['data_feira']) 
+        for feira in self.ordem:
             vendas_feira = []
             for venda in self.conteudo["historico_feiras_vendas"]:
                 if venda["id_historico_feira"] == feira["id"]:
@@ -204,6 +207,7 @@ class Historico_scroll_feiras(BoxLayout):
         self.add_widget(Button(height=1, size_hint_y=None, background_color=(0, 0, 0, 0)))
 
         feiras_historico = self.conteudo["historico_feiras"]
+        self.ordem = sorted(self.conteudo["historico_feiras"], key=lambda d: d['data_feira']) 
         if mes == "Todos":
             if ano == "Todos":
                 self.atualizar()
@@ -211,7 +215,7 @@ class Historico_scroll_feiras(BoxLayout):
                 for feira in feiras_historico:
                     if ano == feira["data_feira"][:4]:
                         vendas_feira = []
-                        for venda in self.conteudo["historico_feiras_vendas"]:
+                        for venda in self.ordem:
                             if venda["id_historico_feira"] == feira["id"]:
                                 vendas_feira.append(venda)
 
@@ -241,7 +245,7 @@ class Historico_scroll_feiras(BoxLayout):
                 for feira in feiras_historico:
                     if feira["data_feira"][5:7] == mes:
                         vendas_feira = []
-                        for venda in self.conteudo["historico_feiras_vendas"]:
+                        for venda in self.ordem:
                             if venda["id_historico_feira"] == feira["id"]:
                                 vendas_feira.append(venda)
 
@@ -270,7 +274,7 @@ class Historico_scroll_feiras(BoxLayout):
                 for feira in feiras_historico:
                     if feira["data_feira"][5:7] == mes and feira["data_feira"][:4] == ano:
                         vendas_feira = []
-                        for venda in self.conteudo["historico_feiras_vendas"]:
+                        for venda in self.ordem:
                             if venda["id_historico_feira"] == feira["id"]:
                                 vendas_feira.append(venda)
 

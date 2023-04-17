@@ -2,6 +2,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner, SpinnerOption
+from kivy.uix.popup import Popup
 
 from save_and_load import *
 from menu import *
@@ -13,11 +14,10 @@ from financas import *
 
 from kivy.core.clipboard import Clipboard
 from kivy.core.window import Window
-from plyer import filechooser, notification
+from plyer import filechooser
 from mysql.connector import connect
 from PIL import Image
 import os
-import subprocess
 
 from android.storage import primary_external_storage_path
 from android.permissions import request_permissions, Permission
@@ -75,13 +75,8 @@ class Geral(BoxLayout):
         self.ids.gerenciador_financas.current = "financas atual"
         self.ids.gerenciador_financas_atual.current = "financas atual principal"
 
-    def copiar_imagem(self, widget):
-        img = Image.open(widget.source)
-        filename = os.path.basename(widget.source)
-        filename = os.path.join(gallery_path, filename[:-4] + "_copia" + filename[-4:])
-        if os.path.isfile(filename):
-            os.remove(filename)
-        img.save(filename)
+    def copiar_imagem(self, widget="", source=""):
+        App.get_running_app().copiar_imagem(widget=widget, source=source)
 
     def sql_to_json(self):
         conteudo = {"colecoes_estoque": [], 
@@ -96,7 +91,8 @@ class Geral(BoxLayout):
                "feiras_vendas": [], 
                "financas_atual": [], 
                "historico_financas": [], 
-               "historico_financas_compras": []}
+               "historico_financas_compras": [],
+               "imagens_subprodutos_estoque": []}
         
         try:
             if self.sql == False:
@@ -325,7 +321,20 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Falha ao carregar historico_financas_compras"
                 return
 
-
+            try:
+                self.sql.execute("SELECT * FROM imagens_subprodutos_estoque")
+                imagens_subprodutos_estoque = self.sql.fetchall()
+                for item in imagens_subprodutos_estoque:
+                    conteudo["imagens_subprodutos_estoque"].append({
+                        "id": item[0],
+                        "imagem": item[1],
+                        "id_subproduto": item[2],
+                        "ativo": item[3]
+                    })
+            except:
+                self.ids.administrador_mensagens.text = "Falha ao carregar imagens_subprodutos_estoque"
+                return
+            
             self.ids.administrador_mensagens.text = "Pego informações da nuvem!"
             App.get_running_app().conteudo = conteudo
             self.database.commit()
@@ -494,6 +503,16 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Histórico finanças compras não salvo em SQL"
                 erros += 1
 
+            try:
+                for imagens_subprodutos_estoque in conteudo["imagens_subprodutos_estoque"]:
+                    self.sql.execute(
+                        f"""INSERT INTO imagens_subprodutos_estoque (imagem, id_subproduto, ativo) VALUES
+                        ('{imagens_subprodutos_estoque["imagem"]}', {imagens_subprodutos_estoque["id_subproduto"]}, {imagens_subprodutos_estoque["ativo"]})"""
+                    )
+                    self.ids.administrador_mensagens.text = "Imagens subprodutos estoque salvo em SQL"
+            except:
+                self.ids.administrador_mensagens.text = "Imagens subprodutos estoque não salvo em SQL"
+
             self.sql.execute("SET FOREIGN_KEY_CHECKS=1")
 
             self.database.commit()
@@ -636,6 +655,13 @@ class Geral(BoxLayout):
         
         elif lugar == "editar subprodutos":
             filechooser.open_file(on_selection=self.editar_subprodutos_imagem)
+
+        elif lugar == "imagens subprodutos":
+            filechooser.open_file(on_selection=self.adicionar_imagens_adicionais_subprodutos)
+    
+    def adicionar_imagens_adicionais_subprodutos(self, selecao):
+        if selecao:
+            self.ids.scroll_imagens_subprodutos.adicionar(selecao[0])
     
     def adicionar_produtos_imagem(self, selecao):
         if selecao:
@@ -660,9 +686,25 @@ class MyApp(App):
         self.conteudo = carregar()
         self.width = Window.size[0]
         self.center_x = Window.center[0]
+        self.popup = Popup(title='',
+                           separator_color=[0, 0, 0, 0],
+    content=Label(text='Imagens copiadas!', font_size=60, bold=True, pos_hint={'center_y': 0.6}),
+    size_hint=(None, None), size=(600, 120), pos_hint={'y': 0.1}, background_color=[1, 36/255, 148/255, 1], background="")
     
-    def show_notification(self):
-        notification.notify(title='test', message="Notification using plyer")
+    def mostrar_popup(self):
+        self.popup.open()
+
+    def copiar_imagem(self, widget="", source=""):
+        if source == "":
+            source = widget.source
+        img = Image.open(source)
+        filename = os.path.basename(source)
+        filename = os.path.join(gallery_path, filename[:-4] + "_copia" + filename[-4:])
+        #filename = os.path.join(filename[:-4] + "_copia" + filename[-4:])
+        if os.path.isfile(filename):
+            os.remove(filename)
+        img.save(filename)
+        self.mostrar_popup()
 
     def build(self):
         return Geral()
