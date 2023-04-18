@@ -1353,7 +1353,7 @@
                                         SpinnerDropdown:
                                             id: spinner_feira_adicionar_subproduto_concluir
                                             background_color: 0, 0, 0, 0
-                                            font_size: 50
+                                            font_size: 70
                                             text: "•Escolha um subproduto"
                                             color: 0, 0, 0, 1
                                             values: concluir_feira_scroll.subprodutos_levados_na_feira()
@@ -1381,7 +1381,7 @@
                                         SpinnerDropdown:
                                             id: spinner_feiras_concluir_venda_pagamento
                                             background_color: 0, 0, 0, 0
-                                            font_size: 50
+                                            font_size: 70
                                             color: 0, 0, 0, 1
                                             text: "•Método de pagamento"
                                             values: ["Pix", "Dinheiro físico", "Cartão de crédito", "Cartão de débito"]
@@ -2449,6 +2449,9 @@
                         gerenciador_telas_principal.current = "estoque"
                         scroll_colecoes.atualizar()
                         app.root.resetar_screenmanagers()
+                        total_colecao.text = "TOTAL: R$" + "{:,.2f}".format(scroll_colecoes.preco_total())
+                        total_produto.text = "TOTAL: R$" + "{:,.2f}".format(scroll_produtos.preco_total())
+                        total_subproduto.text = "TOTAL: R$" + "{:,.2f}".format(scroll_subprodutos.preco_total())
             
         BoxLayout:
             padding: 5
@@ -3347,5 +3350,5 @@
         bold: True
         on_release: 
             app.root.ids.scroll_imagens_subprodutos.excluir(self.parent.id)
-            app.root.ids.scroll_imagens_subprodutos.atualizar(self.parent.id)
+            app.root.ids.scroll_imagens_subprodutos.atualizar(self.parent.id_subproduto)
 #

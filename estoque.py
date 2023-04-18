@@ -315,7 +315,8 @@ class Scroll_imagens_subprodutos(BoxLayout):
             if imagem["ativo"] == 1 and imagem["id_subproduto"] == self.id_subproduto:
                 self.add_widget(Caixa_imagens_subprodutos(
                     id=imagem["id"],
-                    imagem=imagem["imagem"]), len(self.children) - 1
+                    imagem=imagem["imagem"],
+                    id_subproduto=self.id_subproduto), len(self.children) - 1
                 )
 
     def adicionar(self, imagem):
@@ -339,8 +340,9 @@ class Scroll_imagens_subprodutos(BoxLayout):
 
 
 class Caixa_imagens_subprodutos(BoxLayout):
-    def __init__(self, id, imagem, **kwargs):
+    def __init__(self, id, imagem, id_subproduto, **kwargs):
         super().__init__(**kwargs)
         self.id = id
+        self.id_subproduto = id_subproduto
         self.source = imagem
         self.ids.imagem.source = imagem
