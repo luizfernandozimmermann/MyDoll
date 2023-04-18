@@ -291,6 +291,7 @@ class Caixa_subproduto(Button):
         self.ids.imagem_produto.source = imagem
 
 
+
 class Scroll_imagens_subprodutos(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -300,11 +301,14 @@ class Scroll_imagens_subprodutos(BoxLayout):
     def copiar_todas_as_imagens(self):
         for widget in self.children[1:-1]:
             App.get_running_app().copiar_imagem(source=widget.source)
-            
-    
-    def atualizar(self):
+        
+    def atualizar(self, numero=None):
         self.conteudo = App.get_running_app().conteudo
 
+        if numero == None:
+            numero = self.id_subproduto
+        
+        self.id_subproduto = numero
         self.clear_widgets(self.children[1:-1])
 
         for imagem in self.conteudo["imagens_subprodutos_estoque"]:
@@ -322,7 +326,6 @@ class Scroll_imagens_subprodutos(BoxLayout):
             "id_subproduto": self.id_subproduto,
             "ativo": 1
         }
-        print(dic)
         self.conteudo["imagens_subprodutos_estoque"].append(dic)
         salvar(self.conteudo)
         self.atualizar()

@@ -14,7 +14,7 @@ class Agenda_scroll(BoxLayout):
         self.anos = [str(datetime.date.today().year), str(datetime.date.today().year + 1), str(datetime.date.today().year + 2)]
         self.atualizar()
     
-    def adicionar_historico(self, forma_pagamento, preco, preco_hint):
+    def adicionar_historico(self, forma_pagamento, preco, preco_hint, checkbox_ativo):
         self.conteudo = App.get_running_app().conteudo
 
         if preco == "":
@@ -32,7 +32,8 @@ class Agenda_scroll(BoxLayout):
             "preco_total": preco
         }
         
-        self.conteudo["subprodutos_estoque"][self.conteudo["agenda"][self.mais_informacoes_agenda - 1]["id_subproduto"] - 1]["quantidade"] -= self.conteudo["agenda"][self.mais_informacoes_agenda - 1]["quantidade"]
+        if checkbox_ativo:
+            self.conteudo["subprodutos_estoque"][self.conteudo["agenda"][self.mais_informacoes_agenda - 1]["id_subproduto"] - 1]["quantidade"] -= self.conteudo["agenda"][self.mais_informacoes_agenda - 1]["quantidade"]
         self.conteudo["historico_agenda"].append(dic)
         self.conteudo["agenda"][self.mais_informacoes_agenda - 1]["ativo"] = 0
         salvar(self.conteudo)

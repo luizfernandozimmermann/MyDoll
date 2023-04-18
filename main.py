@@ -662,6 +662,7 @@ class Geral(BoxLayout):
     def adicionar_imagens_adicionais_subprodutos(self, selecao):
         if selecao:
             self.ids.scroll_imagens_subprodutos.adicionar(selecao[0])
+            self.ids.scroll_imagens_subprodutos.atualizar()
     
     def adicionar_produtos_imagem(self, selecao):
         if selecao:
@@ -686,10 +687,9 @@ class MyApp(App):
         self.conteudo = carregar()
         self.width = Window.size[0]
         self.center_x = Window.center[0]
-        self.popup = Popup(title='',
+        self.popup = Popup(title='Imagens copiadas!', title_align="center", title_size=70,
                            separator_color=[0, 0, 0, 0],
-    content=Label(text='Imagens copiadas!', font_size=60, bold=True, pos_hint={'center_y': 0.6}),
-    size_hint=(None, None), size=(600, 120), pos_hint={'y': 0.1}, background_color=[1, 36/255, 148/255, 1], background="")
+    size_hint=(None, None), size=(700, 170), separator_height=0)
     
     def mostrar_popup(self):
         self.popup.open()

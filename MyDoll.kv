@@ -116,7 +116,7 @@
                 id: gerenciador_colecoes
                 Screen:
                     name: "mostrar colecoes"
-                    on_enter: total_colecao.text = "TOTAL: R$" + "{:,.2f}".format(scroll_colecoes.preco_total())
+                    on_pre_enter: total_colecao.text = "TOTAL: R$" + "{:,.2f}".format(scroll_colecoes.preco_total())
                     BoxLayout:
                         spacing: 10
                         orientation: "vertical"
@@ -207,7 +207,7 @@
                                             radius: [30,]
                 
                 Screen:
-                    on_enter:
+                    on_pre_enter:
                         adicionar_colecoes_texto.text = ""
 
                     name: "adicionar colecoes"
@@ -302,7 +302,7 @@
                         id: gerenciador_produtos
                         Screen:
                             name: "mostrar produtos"
-                            on_enter: total_produto.text = "TOTAL: R$" + "{:,.2f}".format(scroll_produtos.preco_total())
+                            on_pre_enter: total_produto.text = "TOTAL: R$" + "{:,.2f}".format(scroll_produtos.preco_total())
                             BoxLayout:
                                 spacing: 10
                                 orientation: "vertical"
@@ -393,7 +393,7 @@
                                                     radius: [30,]
 
                         Screen:
-                            on_enter:
+                            on_pre_enter:
                                 adicionar_produto_imagem.source = "imagens/logo.png"
                                 adicionar_produto_nome.text = ""
                                 adicionar_produto_preco.text = ""
@@ -647,7 +647,7 @@
                                                             radius: [30,]
                                 
                                 Screen:
-                                    on_enter:
+                                    on_pre_enter:
                                         adicionar_subproduto_quantidade.text = ""
                                         adicionar_subproduto_nome.text = ""
                                         adicionar_subproduto_imagem.source = "imagens/logo.png"
@@ -804,6 +804,7 @@
 
                                 Screen:
                                     name: "imagens subprodutos"
+                                    on_pre_enter: scroll_imagens_subprodutos.atualizar()
                                     BoxLayout:
                                         ScrollView:
                                             bar_color: 0, 0, 0, 0
@@ -892,7 +893,7 @@
 
                 Screen:
                     name: "adicionar subproduto"
-                    on_enter: 
+                    on_pre_enter: 
                         spinner_feira_adicionar_colecao.values = feiras_scroll.colecoes()
                         spinner_feira_adicionar_colecao.text = "•Escolha uma coleção"
                         spinner_feira_adicionar_produto.text = "•Escolha um produto"
@@ -942,6 +943,7 @@
                                         input_filter: "float"
                                         background_color: 0, 0, 0, 0
                                         hint_text: "Quantidade"
+                                        multiline: False
                                         font_size: 70
                                         height: 100
                                         size_hint_x: 0.5
@@ -995,6 +997,7 @@
                                 halign: "center"
                                 size_hint_y: None
                                 height: 100
+                                multiline: False
                                 font_size: 70
                                 hint_text: "Nome da feira"
                                 canvas.before:
@@ -1010,6 +1013,7 @@
                                 halign: "center"
                                 size_hint_y: None
                                 height: 100
+                                multiline: False
                                 font_size: 70
                                 hint_text: "Local da feira"
                                 canvas.before:
@@ -1025,6 +1029,7 @@
                                 hint_text: "Descrição"
                                 halign: "center"
                                 size_hint_y: None
+                                multiline: False
                                 height: 100
                                 font_size: 70
                                 canvas.before:
@@ -1070,6 +1075,7 @@
                                     hint_text: "Horário inicial"
                                     halign: "center"
                                     size_hint_y: None
+                                    multiline: False
                                     height: 100
                                     font_size: 70
                                     background_color: 0, 0, 0, 0
@@ -1084,6 +1090,7 @@
                                     background_color: 0, 0, 0, 0
                                     hint_text: "Horário final"
                                     halign: "center"
+                                    multiline: False
                                     size_hint_y: None
                                     height: 100
                                     font_size: 70
@@ -1123,6 +1130,7 @@
                                 id: nome_feira_editar
                                 background_color: 0, 0, 0, 0
                                 halign: "center"
+                                multiline: False
                                 size_hint_y: None
                                 height: 100
                                 font_size: 70
@@ -1139,6 +1147,7 @@
                                 background_color: 0, 0, 0, 0
                                 halign: "center"
                                 size_hint_y: None
+                                multiline: False
                                 height: 100
                                 font_size: 70
                                 hint_text: "Local da feira"
@@ -1155,6 +1164,7 @@
                                 hint_text: "Descrição"
                                 halign: "center"
                                 size_hint_y: None
+                                multiline: False
                                 height: 100
                                 font_size: 70
                                 canvas.before:
@@ -1199,6 +1209,7 @@
                                     hint_text: "Horário inicial"
                                     halign: "center"
                                     size_hint_y: None
+                                    multiline: False
                                     height: 100
                                     font_size: 70
                                     background_color: 0, 0, 0, 0
@@ -1213,6 +1224,7 @@
                                     background_color: 0, 0, 0, 0
                                     hint_text: "Horário final"
                                     halign: "center"
+                                    multiline: False
                                     size_hint_y: None
                                     height: 100
                                     font_size: 70
@@ -1320,7 +1332,7 @@
                         
                         Screen:
                             name: "adicionar venda feira"
-                            on_enter: 
+                            on_pre_enter: 
                                 spinner_feira_adicionar_subproduto_concluir.values = concluir_feira_scroll.subprodutos_levados_na_feira()
                                 spinner_feira_adicionar_subproduto_concluir.text = "•Escolha um subproduto"
                                 spinner_feiras_concluir_venda_pagamento.text = "•Método de pagamento"
@@ -1345,22 +1357,13 @@
                                             text: "•Escolha um subproduto"
                                             color: 0, 0, 0, 1
                                             values: concluir_feira_scroll.subprodutos_levados_na_feira()
-                                        SpinnerDropdown:
-                                            id: spinner_feiras_concluir_venda_pagamento
-                                            background_color: 0, 0, 0, 0
-                                            font_size: 50
-                                            color: 0, 0, 0, 1
-                                            text: "•Método de pagamento"
-                                            values: ["Pix", "Dinheiro físico", "Cartão de crédito", "Cartão de débito"]
-                                        
-                                    BoxLayout:
-                                        spacing: 15
-                                        orientation: "vertical"
+
                                         BoxLayout:
                                             TextInput:
                                                 id: quantidade_subproduto_feira_adicionar_concluir
                                                 input_filter: "float"
                                                 hint_text: "Quantidade"
+                                                multiline: False
                                                 size_hint_y: None
                                                 font_size: 70
                                                 center: self.parent.center
@@ -1374,6 +1377,15 @@
                                                     Line:
                                                         rectangle: (self.x, self.y, self.width, self.height)
                                                         width: 5
+
+                                        SpinnerDropdown:
+                                            id: spinner_feiras_concluir_venda_pagamento
+                                            background_color: 0, 0, 0, 0
+                                            font_size: 50
+                                            color: 0, 0, 0, 1
+                                            text: "•Método de pagamento"
+                                            values: ["Pix", "Dinheiro físico", "Cartão de crédito", "Cartão de débito"]
+                                        
                                         BoxLayout: 
                                             TextInput:
                                                 id: preco_subproduto_feira_adicionar_concluir
@@ -1381,6 +1393,7 @@
                                                 center: self.parent.center
                                                 hint_text: "Preço"
                                                 halign: "center"
+                                                multiline: False
                                                 size_hint_y: None
                                                 font_size: 70
                                                 height: 100
@@ -1402,6 +1415,7 @@
                                         size_hint_y: None
                                         font_size: 70
                                         height: 175
+                                        multiline: False
                                         halign: "center"
                                         background_color: 0, 0, 0, 0
                                         color: 0, 0, 0, 1
@@ -1470,7 +1484,7 @@
                 
                 Screen:
                     name: "adicionar"
-                    on_enter: 
+                    on_pre_enter: 
                         spinner_agenda_adicionar_colecao.values = feiras_scroll.colecoes()
                         spinner_agenda_adicionar_colecao.text = "•Escolha uma coleção"
                         spinner_agenda_adicionar_produto.text = "•Escolha um produto"
@@ -1522,6 +1536,7 @@
                                         hint_text: "Quantidade"
                                         font_size: 70
                                         height: 100
+                                        multiline: False
                                         size_hint_y: None
                                         halign: "center"
                                         background_color: 0, 0, 0, 0
@@ -1538,6 +1553,7 @@
                                         halign: "center"
                                         font_size: 70
                                         height: 175
+                                        multiline: False
                                         size_hint_y: None
                                         background_color: 0, 0, 0, 0
                                         canvas.before:
@@ -1592,7 +1608,7 @@
 
                 Screen:
                     name: "editar"
-                    on_enter: spinner_agenda_editar_colecoes.values = feiras_scroll.colecoes()
+                    on_pre_enter: spinner_agenda_editar_colecoes.values = feiras_scroll.colecoes()
                     BoxLayout:
                         orientation: "vertical"
                         BoxLayout:
@@ -1637,6 +1653,7 @@
                                         hint_text: "Quantidade"
                                         font_size: 70
                                         height: 100
+                                        multiline: False
                                         size_hint_y: None
                                         halign: "center"
                                         background_color: 0, 0, 0, 0
@@ -1654,6 +1671,7 @@
                                         font_size: 70
                                         height: 100
                                         size_hint_y: None
+                                        multiline: False
                                         background_color: 0, 0, 0, 0
                                         canvas.before:
                                             Color:
@@ -1717,9 +1735,10 @@
 
                 Screen:
                     name: "concluir"
-                    on_enter:
+                    on_pre_enter:
                         preco_subproduto_compromisso_saber_mais.text = ""
                         spinner_agenda_concluir_venda_pagamento.text = "•Forma de pagamento"
+                        checkbox_agenda_concluir.active = True
                     
                     BoxLayout:
                         spacing: 10
@@ -1763,6 +1782,7 @@
                                 input_filter: "float"
                                 font_size: 70
                                 height: 100
+                                multiline: False
                                 halign: "center"
                                 input_filter: "float"
                                 size_hint_y: None
@@ -1783,6 +1803,29 @@
                                 color: 0, 0, 0, 1
                                 text: "•Forma de pagamento"
                                 values: ["Pix", "Dinheiro físico", "Cartão de crédito", "Cartão de débito"]
+                        BoxLayout:
+                            size_hint_y: 0.1
+                            Label:
+                                text: "Subtrair do estoque: "
+                                color: 0, 0, 0, 1
+                                bold: True
+                                font_size: 50
+                                halign: "right"
+                            
+                            CheckBox:
+                                id: checkbox_agenda_concluir
+                                active: True
+                                canvas.before:
+                                    Color:
+                                        rgb: 0,0,0
+                                    Rectangle:
+                                        pos:self.center_x-8, self.center_y-8
+                                        size:[16,16]
+                                    Color:
+                                        rgb: 1, 1, 1
+                                    Rectangle:
+                                        pos:self.center_x-6, self.center_y-6
+                                        size:[12,12]
 
                         BoxLayout:
                             size_hint_y: 0.15
@@ -1795,7 +1838,7 @@
                             Botao:
                                 text: "Concluir"
                                 on_release: 
-                                    if spinner_agenda_concluir_venda_pagamento.text != "•Forma de pagamento": agenda_scroll.adicionar_historico(spinner_agenda_concluir_venda_pagamento.text, preco_subproduto_compromisso_saber_mais.text, preco_subproduto_compromisso_saber_mais.hint_text)
+                                    if spinner_agenda_concluir_venda_pagamento.text != "•Forma de pagamento": agenda_scroll.adicionar_historico(spinner_agenda_concluir_venda_pagamento.text, preco_subproduto_compromisso_saber_mais.text, preco_subproduto_compromisso_saber_mais.hint_text, checkbox_agenda_concluir.active)
                                     if spinner_agenda_concluir_venda_pagamento.text != "•Forma de pagamento": gerenciador_agenda.current = "principal"
                                     gerenciador_agenda.transition.direction = "up"
 
@@ -2007,6 +2050,7 @@
                                 Screen:
                                     name: "financas atual principal"
                                     ScrollView:
+                                        bar_color: 0, 0, 0, 0
                                         Scroll_financas_atual:
                                             id: scroll_financas_atual
                                             orientation: "vertical"
@@ -2060,7 +2104,7 @@
 
                                 Screen:
                                     name: "financas atual adicionando"
-                                    on_enter:
+                                    on_pre_enter:
                                         produto_financas_adicionando.text = ""
                                         local_financas_adicionando.text = ""
                                         preco_financas_adicionando.text = ""
@@ -2079,6 +2123,7 @@
                                                 spacing: 40
                                                 TextInput:
                                                     id: produto_financas_adicionando
+                                                    multiline: False
                                                     hint_text: "Produto"
                                                     font_size: 70
                                                     height: 100
@@ -2097,6 +2142,7 @@
                                                     hint_text: "Local ou loja"
                                                     font_size: 70
                                                     height: 100
+                                                    multiline: False
                                                     size_hint_y: None
                                                     halign: "center"
                                                     background_color: 0, 0, 0, 0
@@ -2111,6 +2157,7 @@
                                                     id: preco_financas_adicionando
                                                     hint_text: "Preço pago"
                                                     halign: "center"
+                                                    multiline: False
                                                     input_filter: "float" 
                                                     font_size: 70
                                                     height: 100
@@ -2160,6 +2207,7 @@
                                                     id: descricao_financas_adicionando
                                                     hint_text: "Descrição"
                                                     halign: "center"
+                                                    multiline: False
                                                     font_size: 70
                                                     height: 100
                                                     size_hint_y: None
@@ -2200,6 +2248,7 @@
                                                 TextInput:
                                                     id: produto_financas_editando
                                                     text: "Produto"
+                                                    multiline: False
                                                     font_size: 70
                                                     height: 100
                                                     size_hint_y: None
@@ -2217,6 +2266,7 @@
                                                     text: "Local ou loja"
                                                     font_size: 70
                                                     height: 100
+                                                    multiline: False
                                                     size_hint_y: None
                                                     halign: "center"
                                                     background_color: 0, 0, 0, 0
@@ -2230,6 +2280,7 @@
                                                 TextInput:
                                                     id: preco_financas_editando
                                                     text: "Preço pago"
+                                                    multiline: False
                                                     halign: "center"
                                                     input_filter: "float" 
                                                     font_size: 70
@@ -2282,6 +2333,7 @@
                                                     halign: "center"
                                                     font_size: 70
                                                     height: 100
+                                                    multiline: False
                                                     size_hint_y: None
                                                     background_color: 0, 0, 0, 0
                                                     canvas.before:
@@ -2315,7 +2367,7 @@
 
 
                         Screen:
-                            on_enter: 
+                            on_pre_enter: 
                                 filtro_mes_financas.values = scroll_financas_historico.meses_filtro()
                                 filtro_ano_financas.values = scroll_financas_historico.anos_filtro()
                             name: "financas historico"
@@ -2352,6 +2404,7 @@
                                         on_text: 
                                             scroll_financas_historico.filtro_atualizar( filtro_mes_financas.text[5:], self.text[5:])
                                 ScrollView:
+                                    bar_color: 0, 0, 0, 0
                                     size_hint_y: 0.9
                                     Scroll_financas_historico:
                                         id: scroll_financas_historico
@@ -2900,13 +2953,13 @@
         size_hint_x: .02
 
     Image:
-        size_hint_x: .3
+        size_hint_x: .2
         id: imagem_subproduto_feira
         height: self.parent.height * .8
     
     Label:
         id: texto_subproduto_feira
-        size_hint_x: .48
+        size_hint_x: .58
         halign: "center"
         bold: True
         font_size: 60
@@ -3292,5 +3345,7 @@
         text: "x"
         font_size: 120
         bold: True
-        on_release: app.root.ids.scroll_imagens_subprodutos.excluir(self.parent.id)
+        on_release: 
+            app.root.ids.scroll_imagens_subprodutos.excluir(self.parent.id)
+            app.root.ids.scroll_imagens_subprodutos.atualizar(self.parent.id)
 #
