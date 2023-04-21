@@ -4,7 +4,6 @@ from kivy.app import App
 from save_and_load import *
 
 
-
 class Scroll_colecoes(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -45,7 +44,7 @@ class Scroll_colecoes(BoxLayout):
     def pesquisar(self, texto):
         self.conteudo = App.get_running_app().conteudo
         self.colecoes = self.conteudo["colecoes_estoque"]
-        self.ordem = sorted(self.conteudo["colecoes_estoque"], key=lambda d: d['colecao']) 
+        self.ordem = sorted(self.conteudo["colecoes_estoque"], key=lambda d: d['colecao'].lower()) 
         self.ordem.reverse()
 
         self.clear_widgets(self.children[1:])
@@ -68,7 +67,7 @@ class Scroll_colecoes(BoxLayout):
     def atualizar(self):
         self.conteudo = App.get_running_app().conteudo
         self.colecoes = self.conteudo["colecoes_estoque"]
-        self.ordem = sorted(self.conteudo["colecoes_estoque"], key=lambda d: d['colecao']) 
+        self.ordem = sorted(self.conteudo["colecoes_estoque"], key=lambda d: d['colecao'].lower()) 
         self.ordem.reverse()
         
         self.clear_widgets(self.children[1:])
@@ -97,7 +96,7 @@ class Scroll_produtos(BoxLayout):
     def pesquisar(self, texto):
         self.conteudo = App.get_running_app().conteudo
         self.produtos = self.conteudo["produtos_estoque"]
-        self.ordem = sorted(self.conteudo["produtos_estoque"], key=lambda d: d['produto']) 
+        self.ordem = sorted(self.conteudo["produtos_estoque"], key=lambda d: d['preco']) 
         self.ordem.reverse()
 
         self.clear_widgets(self.children[1:])
@@ -168,13 +167,14 @@ class Scroll_produtos(BoxLayout):
             colecao = self.colecao_selecionada
 
         self.produtos = self.conteudo["produtos_estoque"]
-        self.ordem = sorted(self.conteudo["produtos_estoque"], key=lambda d: d['produto']) 
+        self.ordem = sorted(self.conteudo["produtos_estoque"], key=lambda d: d['preco']) 
         self.ordem.reverse()
 
         self.clear_widgets(self.children[1:])
 
         for produto in self.ordem:
             if produto["ativo"] == 1 and produto["id_colecao"] == colecao:
+                print(produto)
                 preco_formatado = 'R$' + '{:,.2f}'.format(produto['preco'])
                 texto = f"{produto['produto']}\n{preco_formatado}"
                 self.add_widget(Caixa_produto(text=texto, id_produto=produto["id"], imagem=produto["imagem"]), len(self.children))
@@ -240,7 +240,7 @@ class Scroll_subprodutos(BoxLayout):
     def pesquisar(self, texto):
         self.conteudo = App.get_running_app().conteudo
         self.subprodutos = self.conteudo["subprodutos_estoque"]
-        self.ordem = sorted(self.conteudo["subprodutos_estoque"], key=lambda d: d['subproduto']) 
+        self.ordem = sorted(self.conteudo["subprodutos_estoque"], key=lambda d: d['subproduto'].lower()) 
         self.ordem.reverse()
 
         self.clear_widgets(self.children[1:])
@@ -275,7 +275,7 @@ class Scroll_subprodutos(BoxLayout):
         self.clear_widgets(self.children[1:])
 
         self.subprodutos = self.conteudo["subprodutos_estoque"]
-        self.ordem = sorted(self.conteudo["subprodutos_estoque"], key=lambda d: d['subproduto']) 
+        self.ordem = sorted(self.conteudo["subprodutos_estoque"], key=lambda d: d['subproduto'].lower()) 
         self.ordem.reverse()
         for subproduto in self.ordem:
             if subproduto["ativo"] == 1 and subproduto["id_produto"] == produto:

@@ -364,15 +364,13 @@ class Geral(BoxLayout):
             for tabela in tabelas:
                 self.sql.execute(f"TRUNCATE TABLE {tabela}")
 
-            erros = 0
-
             try:
                 for colecao in conteudo["colecoes_estoque"]:
                     self.sql.execute(f"""INSERT INTO colecoes_estoque (colecao, ativo) VALUES ('{colecao["colecao"]}', {colecao["ativo"]})""")
                 self.ids.administrador_mensagens.text = "Coleções salvas em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Coleções não salvas em SQL"
-                erros += 1
+                return
 
             try:
                 for produto in conteudo["produtos_estoque"]:
@@ -380,7 +378,7 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Produtos salvos em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Produtos não salvos em SQL"
-                erros += 1
+                return
 
             try:
                 for subproduto in conteudo["subprodutos_estoque"]:
@@ -391,7 +389,7 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Subprodutos salvos em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Subprodutos não salvos em SQL"
-                erros += 1
+                return
 
             try:
                 for agenda in conteudo["agenda"]:
@@ -402,7 +400,7 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Agenda salva em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Agenda não salva em SQL"
-                erros += 1
+                return
 
             try:
                 for historico_agenda in conteudo["historico_agenda"]:
@@ -413,7 +411,7 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Histórico da agenda salva em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Histórico da agenda não salva em SQL"
-                erros += 1
+                return
 
             try:
                 for feira in conteudo["feiras"]:
@@ -424,7 +422,7 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Feiras salvas em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Feiras não salvas em SQL"
-                erros += 1
+                return
 
             try:
                 for subprodutos_feira in conteudo["subprodutos_feira"]:
@@ -435,7 +433,7 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Produtos das feiras salvos em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Produtos das feiras não salvos em SQL"
-                erros += 1
+                return
 
             try:
                 for feiras_vendas in conteudo["feiras_vendas"]:
@@ -446,7 +444,7 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Produtos das feiras vendas salvos em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Produtos das feiras vendas não salvos em SQL"
-                erros += 1
+                return
 
             try:
                 for historico_feiras in conteudo["historico_feiras"]:
@@ -457,7 +455,7 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Histórico das feiras salvo em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Histórico das feiras não salvo em SQL"
-                erros += 1
+                return
 
             try:
                 for historico_feiras_vendas in conteudo["historico_feiras_vendas"]:
@@ -468,7 +466,7 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Histórico das vendas das feiras salvo em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Histórico das vendas das feiras salvo em SQL"
-                erros += 1
+                return
 
             try:
                 for financas_atual in conteudo["financas_atual"]:
@@ -479,7 +477,7 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Finanças atual salvo em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Finanças atual salvo em SQL"
-                erros += 1
+                return
 
             try:
                 for historico_financas in conteudo["historico_financas"]:
@@ -490,7 +488,7 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Histórico finanças salvo em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Histórico finanças não salvo em SQL"
-                erros += 1
+                return
 
             try:
                 for historico_financas_compras in conteudo["historico_financas_compras"]:
@@ -501,7 +499,7 @@ class Geral(BoxLayout):
                 self.ids.administrador_mensagens.text = "Histórico finanças compras salvo em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Histórico finanças compras não salvo em SQL"
-                erros += 1
+                return
 
             try:
                 for imagens_subprodutos_estoque in conteudo["imagens_subprodutos_estoque"]:
@@ -512,11 +510,12 @@ class Geral(BoxLayout):
                     self.ids.administrador_mensagens.text = "Imagens subprodutos estoque salvo em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Imagens subprodutos estoque não salvo em SQL"
+                return
 
             self.sql.execute("SET FOREIGN_KEY_CHECKS=1")
 
             self.database.commit()
-            self.ids.administrador_mensagens.text = f"Concluido JSON -> SQL com {erros} erros"
+            self.ids.administrador_mensagens.text = f"Concluido JSON -> SQL sem erros"
 
     def copiar_json(self):
         Clipboard.copy(str(App.get_running_app().conteudo))
@@ -530,6 +529,7 @@ class Geral(BoxLayout):
                     salvar(info)
                     App.get_running_app().conteudo = info
                     self.ids.administrador_mensagens.text = "Arquivo JSON salvo"
+                    self.ids.salvar_json.text = ""
                 else:
                     self.ids.administrador_mensagens.text = "Faltam chaves"
             else:
@@ -709,6 +709,5 @@ class MyApp(App):
     def build(self):
         return Geral()
     
-
 
 MyApp().run()

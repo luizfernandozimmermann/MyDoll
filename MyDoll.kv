@@ -76,6 +76,9 @@
 
         Screen:
             name: "administrador"
+            on_pre_enter: 
+                salvar_json.text = ""
+                administrador_mensagens.text = ""
             BoxLayout:
                 orientation: "vertical"
                 spacing: 20

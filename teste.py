@@ -1,9 +1,12 @@
-from save_and_load import *
+from mysql.connector import connect
 
-conteudo = carregar()
+db = connect(
+    host="192.168.15.68",
+    user="mydolladmin",
+    passwd="polentinho",
+    port = "3306",
+    database="mydoll"
+)
 
-for chave, valor in conteudo.items():
-    conteudo[chave] = []
-salvar(conteudo)
-
+cursor = db.cursor()
 
