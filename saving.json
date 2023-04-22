@@ -1,1 +1,16 @@
-{"colecoes_estoque": [{"id": 1, "colecao": "ursos", "ativo": 1}, {"id": 2, "colecao": "bonecas", "ativo": 1}, {"id": 3, "colecao": "capivaras", "ativo": 1}], "produtos_estoque": [{"id": 1, "id_colecao": 2, "imagem": "/storage/emulated/0/DCIM/Camera/20230419_164458.jpg", "produto": "sorriso", "preco": 65.0, "ativo": 1}, {"id": 2, "id_colecao": 2, "imagem": "/storage/emulated/0/DCIM/Camera/20230419_165024.jpg", "produto": "Alegria", "preco": 120.0, "ativo": 1}, {"id": 3, "id_colecao": 2, "imagem": "/storage/emulated/0/DCIM/Camera/20230419_165049.jpg", "produto": "Toy", "preco": 90.0, "ativo": 1}, {"id": 4, "id_colecao": 3, "imagem": "/storage/emulated/0/Android/media/com.whatsapp.w4b/WhatsApp Business/Media/WhatsApp Business Images/IMG-20230419-WA0024.jpg", "produto": "Capi Frida", "preco": 90.0, "ativo": 1}, {"id": 5, "id_colecao": 3, "imagem": "/storage/emulated/0/Trabalho/20221112_142743.heic", "produto": "Capi Fritz", "preco": 90.0, "ativo": 1}, {"id": 6, "id_colecao": 3, "imagem": "imagens/logo.png", "produto": "Capi Baby", "preco": 90.0, "ativo": 1}, {"id": 7, "id_colecao": 3, "imagem": "imagens/logo.png", "produto": "Capivara GG", "preco": 280.0, "ativo": 1}, {"id": 8, "id_colecao": 1, "imagem": "imagens/logo.png", "produto": "micro", "preco": 60.0, "ativo": 1}, {"id": 9, "id_colecao": 1, "imagem": "imagens/logo.png", "produto": "mini", "preco": 70.0, "ativo": 1}, {"id": 10, "id_colecao": 1, "imagem": "imagens/logo.png", "produto": "P", "preco": 110.0, "ativo": 1}, {"id": 11, "id_colecao": 1, "imagem": "imagens/logo.png", "produto": "M", "preco": 140.0, "ativo": 1}, {"id": 12, "id_colecao": 1, "imagem": "imagens/logo.png", "produto": "G", "preco": 180.0, "ativo": 1}, {"id": 13, "id_colecao": 1, "imagem": "imagens/logo.png", "produto": "GG", "preco": 280.0, "ativo": 1}, {"id": 14, "id_colecao": 1, "imagem": "imagens/logo.png", "produto": "Amora", "preco": 1500.0, "ativo": 1}], "subprodutos_estoque": [], "agenda": [], "historico_agenda": [], "feiras": [{"id": 1, "data_feira": "2023-04-23", "horario_inicio": "9:00", "horario_final": "16:30", "nome_feira": "Brique", "local_feira": "rua XV", "descricao": "", "ativo": 1}], "subprodutos_feira": [], "historico_feiras": [], "historico_feiras_vendas": [], "feiras_vendas": [], "financas_atual": [], "historico_financas": [], "historico_financas_compras": [], "imagens_subprodutos_estoque": []}
+{
+  "colecoes_estoque": [], 
+  "produtos_estoque": [], 
+  "subprodutos_estoque": [], 
+  "agenda": [], 
+  "historico_agenda": [], 
+  "feiras": [], 
+  "subprodutos_feira": [], 
+  "historico_feiras": [], 
+  "historico_feiras_vendas": [], 
+  "feiras_vendas": [], 
+  "financas_atual": [], 
+  "historico_financas": [], 
+  "historico_financas_compras": [], 
+  "imagens_subprodutos_estoque": []
+}
