@@ -2603,7 +2603,7 @@
         app.root.ids.pesquisar_subprodutos.hint_text = "Pesquisar em " + app.conteudo["colecoes_estoque"][app.root.ids.scroll_colecoes.colecao_selecionada - 1]["colecao"] + " " + app.conteudo["produtos_estoque"][app.root.ids.scroll_produtos.produto_selecionado - 1]["produto"]
         app.root.ids.total_subproduto.text =  "TOTAL: R$" + "{:,.2f}".format(app.root.ids.scroll_subprodutos.preco_total(app.root.ids.pesquisar_subprodutos.text.strip().lower()))
     
-    Image:
+    AsyncImage:
         id: imagem_produto
         source: ""
         size_hint: None, None
@@ -2656,7 +2656,7 @@
     background_color: (0, 0, 0, 0)
     color: (1, 1, 1, 1)
     font_size: 80
-    Image:
+    AsyncImage:
         id: imagem_produto
         source: ""
         size_hint: None, None
@@ -2966,7 +2966,7 @@
     BoxLayout:
         size_hint_x: .02
 
-    Image:
+    AsyncImage:
         size_hint_x: .2
         id: imagem_subproduto_feira
         height: self.parent.height * .8
