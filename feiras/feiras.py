@@ -179,7 +179,9 @@ class Caixa_feira(BoxLayout):
         
         preco_total = 0
         for subproduto in self.subprodutos:
-            preco_total += subproduto["quantidade"] * self.conteudo["produtos_estoque"][subproduto["id_subproduto"] - 1]["preco"]
+            subproduto_estoque = self.conteudo["subprodutos_estoque"][subproduto["id_subproduto"] - 1]
+            produto_estoque = self.conteudo["produtos_estoque"][subproduto_estoque["id_produto"] - 1]
+            preco_total += subproduto["quantidade"] * produto_estoque["preco"]
                 
         self.ids.botao_feira_concluir.text = f"{self.nome_feira}\n{self.local_feira}\n{converter_data(self.data_feira)}\n{self.horario_inicial}-{self.horario_final}\nPreço total: {'R$' + '{:,.2f}'.format(preco_total)}"
         

@@ -25,7 +25,7 @@ request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL
 external_storage_path = primary_external_storage_path()
 gallery_path = external_storage_path + '/DCIM'
 
-
+Clipboard.copy(str(carregar()))
 Window.keyboard_anim_args = {'d': .2, 't': 'in_out_expo'}
 Window.softinput_mode = "below_target"
 
