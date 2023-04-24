@@ -21,7 +21,7 @@ class Feiras_scroll(BoxLayout):
         for colecao in self.conteudo["colecoes_estoque"]:
             if colecao["ativo"] == 1:
                 colecoes.append(colecao["colecao"])
-
+        colecoes.sort()
         return colecoes
 
     def procurar_subprodutos(self, produto_nome):
@@ -35,7 +35,7 @@ class Feiras_scroll(BoxLayout):
         for subproduto in self.conteudo["subprodutos_estoque"]:
             if subproduto["ativo"] == 1 and subproduto["id_produto"] == id:
                 subprodutos.append(subproduto["subproduto"])
-
+        subprodutos.sort()
         return subprodutos
 
     def procurar_produtos(self, colecao_nome):
@@ -49,7 +49,7 @@ class Feiras_scroll(BoxLayout):
         for produto in self.conteudo["produtos_estoque"]:
             if produto["ativo"] == 1 and produto["id_colecao"] == id:
                 produtos.append(produto["produto"])
-
+        produtos.sort()
         return produtos
 
     def excluir(self):
@@ -84,18 +84,29 @@ class Feiras_scroll(BoxLayout):
         salvar(self.conteudo)
         self.atualizar()
 
-    def adicionar_produto(self, nome_subproduto, quantidade):
+    def adicionar_produto(self, nome_colecao, nome_produto, nome_subproduto, quantidade):
         self.conteudo = App.get_running_app().conteudo
 
+        for colecao in self.conteudo["colecoes_estoque"]:
+            if colecao["colecao"] == nome_colecao:
+                id_colecao = colecao["id"]
+                break
+
+        for produto in self.conteudo["produtos_estoque"]:
+            if produto["produto"] == nome_produto and produto["id_colecao"] == id_colecao:
+                id_produto = produto["id"]
+                break
+
         for subproduto in self.conteudo["subprodutos_estoque"]:
-            if subproduto["subproduto"] == nome_subproduto:
-                id = subproduto["id"]
+            if subproduto["subproduto"] == nome_subproduto and subproduto["id_produto"] == id_produto:
+                id_subproduto = subproduto["id"]
+                print(subproduto)
                 break
         
         dic = {
             "id": len(self.conteudo["subprodutos_feira"]) + 1,
             "id_feira": self.adicionando_subproduto,
-            "id_subproduto": id,
+            "id_subproduto": id_subproduto,
             "quantidade": int(quantidade),
             "ativo": 1
         }
@@ -157,10 +168,12 @@ class Caixa_feira(BoxLayout):
         for subproduto in self.conteudo["subprodutos_feira"]:
             if subproduto["ativo"] == 1 and subproduto["id_feira"] == self.id_feira:
                 self.subprodutos.append(subproduto)
+                produto = self.conteudo["produtos_estoque"][self.conteudo["subprodutos_estoque"][subproduto["id_subproduto"] - 1]["id_produto"] - 1]
+                colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
                 self.add_widget(Caixa_subproduto_feira(
                     id=subproduto["id"],
                     imagem= self.conteudo["subprodutos_estoque"][subproduto["id_subproduto"] - 1]["imagem"],
-                    nome_subproduto= self.conteudo["subprodutos_estoque"][subproduto["id_subproduto"] - 1]["subproduto"],
+                    nome_subproduto= colecao["colecao"] + " " + produto["produto"] + " " + self.conteudo["subprodutos_estoque"][subproduto["id_subproduto"] - 1]["subproduto"],
                     quantidade = subproduto["quantidade"]
                     ), len(self.children) - 1)
         

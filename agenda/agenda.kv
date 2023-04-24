@@ -159,7 +159,7 @@
                         on_release: 
                             if spinner_agenda_adicionar_subproduto.text != "•Escolha um subproduto" and dia_agenda_adicionar_subproduto.text.isnumeric() and mes_agenda_adicionar_subproduto.text.isnumeric() and ano_agenda_adicionar_subproduto.text.isnumeric() and quantidade_subproduto_agenda_adicionar.text.isnumeric(): gerenciador_agenda.current = "principal"
                             gerenciador_agenda.transition.direction = "up"
-                            if spinner_agenda_adicionar_subproduto.text != "•Escolha um subproduto" and dia_agenda_adicionar_subproduto.text.isnumeric() and mes_agenda_adicionar_subproduto.text.isnumeric() and ano_agenda_adicionar_subproduto.text.isnumeric() and quantidade_subproduto_agenda_adicionar.text.isnumeric(): agenda_scroll.adicionar(spinner_agenda_adicionar_subproduto.text, quantidade_subproduto_agenda_adicionar.text, descricao_agenda_adicionar.text, dia_agenda_adicionar_subproduto.text, mes_agenda_adicionar_subproduto.text, ano_agenda_adicionar_subproduto.text)
+                            if spinner_agenda_adicionar_subproduto.text != "•Escolha um subproduto" and dia_agenda_adicionar_subproduto.text.isnumeric() and mes_agenda_adicionar_subproduto.text.isnumeric() and ano_agenda_adicionar_subproduto.text.isnumeric() and quantidade_subproduto_agenda_adicionar.text.isnumeric(): agenda_scroll.adicionar(spinner_agenda_adicionar_colecao.text, spinner_agenda_adicionar_produto.text, spinner_agenda_adicionar_subproduto.text, quantidade_subproduto_agenda_adicionar.text, descricao_agenda_adicionar.text, dia_agenda_adicionar_subproduto.text, mes_agenda_adicionar_subproduto.text, ano_agenda_adicionar_subproduto.text)
                             
 
         Screen:
