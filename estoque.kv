@@ -1,0 +1,932 @@
+<Tela_estoque@Screen>:
+    name: "estoque"
+    on_pre_enter:
+        scroll_colecoes.atualizar()
+        total_colecao.text = "TOTAL: R$" + "{:,.2f}".format(scroll_colecoes.preco_total(pesquisar_colecao.text.strip().lower()))
+        total_produto.text = "TOTAL: R$" + "{:,.2f}".format(scroll_produtos.preco_total(pesquisar_produtos.text.strip().lower()))
+        total_subproduto.text = "TOTAL: R$" + "{:,.2f}".format(scroll_subprodutos.preco_total(pesquisar_subprodutos.text.strip().lower()))
+            
+    ScreenManager:
+        id: gerenciador_colecoes
+        Screen:
+            name: "mostrar colecoes"
+            on_pre_enter: total_colecao.text = "TOTAL: R$" + "{:,.2f}".format(scroll_colecoes.preco_total(pesquisar_colecao.text.strip().lower()))
+            BoxLayout:
+                spacing: 10
+                orientation: "vertical"
+                Button:
+                    id: total_colecao
+                    size_hint_y: 0.1
+                    bold: True
+                    italic: True
+                    text: "TOTAL: R$" + "{:,.2f}".format(scroll_colecoes.preco_total(pesquisar_colecao.text.strip().lower()))
+                    color: 1, 1, 1, 1
+                    background_color: 0, 0, 0, 0
+                    font_size: 80
+                    on_release: 
+                        self.text = "TOTAL: R$" + "{:,.2f}".format(scroll_colecoes.preco_total(pesquisar_colecao.text.strip().lower()))
+                    canvas.before:
+                        Color:
+                            rgba: 1, 36/255, 148/255, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                    
+                BoxLayout:
+                    size_hint_y: None
+                    height: 80
+                    BoxLayout:
+                        size_hint_x: 0.1
+
+                    TextInput:
+                        id: pesquisar_colecao
+                        hint_text: "Pesquisar colecão"
+                        size_hint_x: 0.6
+                        multiline: False
+                        on_text_validate: 
+                            scroll_colecoes.pesquisar(self.text.strip().lower())
+                            total_colecao.text = "TOTAL: R$" + "{:,.2f}".format(scroll_colecoes.preco_total(pesquisar_colecao.text.strip().lower()))
+
+                        halign: "center"
+                        background_color: 0, 0, 0, 0
+                        canvas.before:
+                            Color:
+                                rgba: 0, 0, 0, 1
+                            Line:
+                                rectangle: (self.x, self.y, self.width, self.height)
+                                width: 5
+                    
+                    Button:
+                        size_hint_x: 0.2
+                        background_color: 0, 0, 0, 0
+                        color: 0.7, 0, 0, 1
+                        text: "Limpar"
+                        bold: True
+                        on_release: 
+                            pesquisar_colecao.text = ""
+                            scroll_colecoes.atualizar()
+                            total_colecao.text = "TOTAL: R$" + "{:,.2f}".format(scroll_colecoes.preco_total(pesquisar_colecao.text.strip().lower()))
+
+                    BoxLayout:
+                        size_hint_x: 0.1
+                        
+                ScrollView:
+                    size_hint_y: 0.8
+                    bar_color: 0, 0, 0, 0
+                    Scroll_colecoes:
+                        id: scroll_colecoes
+                        orientation: 'vertical'
+                        spacing: 30
+                        padding: 30
+                        size_hint_y: None
+                        height: self.minimum_height
+
+                        Button:
+                            size_hint: None, None
+                            height: 150
+                            on_release: 
+                                gerenciador_colecoes.transition.direction = "down"
+                                gerenciador_colecoes.current = "adicionar colecoes"
+                            bold: True
+                            width: self.parent.width - self.parent.padding[0] * 2
+                            x: 0
+                            text: "+"
+                            background_color: (0, 0, 0, 0)
+                            color: (1, 1, 1, 1)
+                            font_size: 120
+                            canvas.before:
+                                Color:
+                                    rgba: (1, .29, .655, 1) if self.state=='normal' else (.9, .1, .4, 1)
+                                RoundedRectangle:
+                                    pos: self.pos
+                                    size: self.size
+                                    radius: [30,]
+        
+        Screen:
+            on_pre_enter:
+                adicionar_colecoes_texto.text = ""
+
+            name: "adicionar colecoes"
+            BoxLayout:
+                orientation: 'vertical'
+                BoxLayout:
+                    size_hint_y: 0.85
+                    padding: 50, 150, 50, 150
+                    TextInput:
+                        size_hint_y: None
+                        height: self.font_size + 30
+                        y: (self.parent.height - self.height) // 2
+                        id: adicionar_colecoes_texto
+                        hint_text: "Nome da coleção"
+                        text: ""
+                        multiline: False
+                        halign: "center"
+                        font_size: 80
+                        background_color: 0, 0, 0, 0
+                        canvas.before:
+                            Color:
+                                rgba: 0, 0, 0, 1
+                            Line:
+                                rectangle: (self.x, self.y, self.width, self.height)
+                                width: 5
+
+                BoxLayout:
+                    size_hint_y: 0.15
+                    Botao:
+                        text: "Voltar"
+                        on_release: 
+                            gerenciador_colecoes.transition.direction = "up"
+                            gerenciador_colecoes.current = "mostrar colecoes"
+
+                    Botao:
+                        text: "Adicionar"
+                        on_release:
+                            gerenciador_colecoes.transition.direction = "up"
+                            if adicionar_colecoes_texto.text != "": gerenciador_colecoes.current = "mostrar colecoes"
+                            if adicionar_colecoes_texto.text != "": scroll_colecoes.adicionar_colecao(adicionar_colecoes_texto.text)
+        
+        Screen:
+            name: "editar colecoes"
+            BoxLayout:
+                orientation: 'vertical'
+                BoxLayout:
+                    size_hint_y: 0.85
+                    padding: 50, 150, 50, 150
+                    TextInput:
+                        size_hint_y: None
+                        height: self.font_size + 30
+                        y: (self.parent.height - self.height) // 2
+                        id: editar_colecoes_texto
+                        hint_text: "Nome da coleção"
+                        text: ""
+                        multiline: False
+                        halign: "center"
+                        font_size: 80
+                        background_color: 0, 0, 0, 0
+                        canvas.before:
+                            Color:
+                                rgba: 0, 0, 0, 1
+                            Line:
+                                rectangle: (self.x, self.y, self.width, self.height)
+                                width: 5
+
+                BoxLayout:
+                    size_hint_y: 0.15
+                    Botao:
+                        text: "Voltar"
+                        on_release: 
+                            gerenciador_colecoes.transition.direction = "up"
+                            gerenciador_colecoes.current = "mostrar colecoes"
+
+                    Botao:
+                        text: "Excluir"
+                        on_release: 
+                            gerenciador_colecoes.transition.direction = "up"
+                            scroll_colecoes.excluir_colecao()
+                            gerenciador_colecoes.current = "mostrar colecoes"
+
+                    Botao:
+                        text: "Concluir"
+                        on_release:
+                            gerenciador_colecoes.transition.direction = "up"
+                            if editar_colecoes_texto.text != "": gerenciador_colecoes.current = "mostrar colecoes"
+                            if editar_colecoes_texto.text != "": scroll_colecoes.editar_colecao(editar_colecoes_texto.text)
+
+        Screen:
+            name: "tela produtos"
+            ScreenManager:
+                id: gerenciador_produtos
+                Screen:
+                    name: "mostrar produtos"
+                    on_pre_enter: total_produto.text = "TOTAL: R$" + "{:,.2f}".format(scroll_produtos.preco_total(pesquisar_produtos.text.strip().lower()))
+                    BoxLayout:
+                        spacing: 10
+                        orientation: "vertical"
+                        Button:
+                            id: total_produto
+                            size_hint_y: 0.1
+                            bold: True
+                            italic: True
+                            text: "TOTAL: R$" + "{:,.2f}".format(scroll_produtos.preco_total(pesquisar_produtos.text.strip().lower()))
+                            color: 1, 1, 1, 1
+                            background_color: 0, 0, 0, 0
+                            font_size: 80
+                            on_release: 
+                                self.text = "TOTAL: R$" + "{:,.2f}".format(scroll_produtos.preco_total(pesquisar_produtos.text.strip().lower()))
+                            canvas.before:
+                                Color:
+                                    rgba: 1, 36/255, 148/255, 1
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+                            
+                        BoxLayout:
+                            size_hint_y: None
+                            height: 80
+                            BoxLayout:
+                                size_hint_x: 0.1
+
+                            TextInput:
+                                id: pesquisar_produtos
+                                hint_text: "Pesquisar em "
+                                size_hint_x: 0.6
+                                multiline: False
+                                on_text_validate: 
+                                    total_produto.text = "TOTAL: R$" + "{:,.2f}".format(scroll_produtos.preco_total(self.text.strip().lower()))
+                                    scroll_produtos.pesquisar(self.text.strip().lower())
+
+                                halign: "center"
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: 0, 0, 0, 1
+                                    Line:
+                                        rectangle: (self.x, self.y, self.width, self.height)
+                                        width: 5
+                            
+                            Button:
+                                size_hint_x: 0.2
+                                background_color: 0, 0, 0, 0
+                                color: 0.7, 0, 0, 1
+                                text: "Limpar"
+                                bold: True
+                                on_release: 
+                                    pesquisar_produtos.text = ""
+                                    scroll_produtos.atualizar()
+                                    total_produto.text = "TOTAL: R$" + "{:,.2f}".format(scroll_produtos.preco_total(self.text.strip().lower()))
+
+                            BoxLayout:
+                                size_hint_x: 0.1
+                                
+                        ScrollView:
+                            size_hint_y: 0.8
+                            bar_color: 0, 0, 0, 0
+                            Scroll_produtos:
+                                id: scroll_produtos
+                                orientation: 'vertical'
+                                spacing: 30
+                                padding: 30
+                                size_hint_y: None
+                                height: self.minimum_height
+
+                                Button:
+                                    size_hint: None, None
+                                    height: 150
+                                    on_release: 
+                                        gerenciador_produtos.transition.direction = "down"
+                                        gerenciador_produtos.current = "adicionar produtos"
+                                    bold: True
+                                    width: self.parent.width - self.parent.padding[0] * 2
+                                    x: 0
+                                    text: "+"
+                                    background_color: (0, 0, 0, 0)
+                                    color: (1, 1, 1, 1)
+                                    font_size: 120
+                                    canvas.before:
+                                        Color:
+                                            rgba: (1, .29, .655, 1) if self.state=='normal' else (.9, .1, .4, 1)
+                                        RoundedRectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                            radius: [30,]
+
+                Screen:
+                    on_pre_enter:
+                        adicionar_produto_imagem.source = "imagens/logo.png"
+                        adicionar_produto_nome.text = ""
+                        adicionar_produto_preco.text = ""
+
+                    name: "adicionar produtos"
+                    BoxLayout:
+                        orientation: "vertical"
+                        BoxLayout:
+                            orientation: 'vertical'
+                            padding: 20
+                            spacing: 15
+                            Label:
+                                size_hint_y: 0.15
+                                text: "Escolha uma imagem"
+                                bold: True
+                                color: 0, 0, 0, 1
+                                font_size: 80
+
+                            AsyncImage:
+                                id: adicionar_produto_imagem
+                                source: "imagens/logo.png"
+                                Button:
+                                    size: self.parent.size
+                                    pos: self.parent.pos
+                                    background_color: 0, 0, 0, 0
+                                    on_release: 
+                                        app.root.file_chooser(gerenciador_produtos.current)
+
+                            TextInput:
+                                id: adicionar_produto_nome
+                                font_size: 80
+                                text: ""
+                                hint_text: "Nome do produto"
+                                multiline: False
+                                halign: "center"
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: 0, 0, 0, 1
+                                    Line:
+                                        rectangle: (self.x, self.y + self.height - self.font_size - 30 - 10, self.width, self.font_size + 30)
+                                        width: 5
+
+                            TextInput:
+                                id: adicionar_produto_preco
+                                font_size: 80
+                                text: ""
+                                input_type: 'number'
+                                input_filter: 'int'
+                                hint_text: "Preço do produto"
+                                multiline: False
+                                halign: "center"
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: 0, 0, 0, 1
+                                    Line:
+                                        rectangle: (self.x, self.y + self.height - self.font_size - 30 - 10, self.width, self.font_size + 30)
+                                        width: 5
+
+                        BoxLayout:
+                            size_hint_y: 0.15
+                            Botao:
+                                text: "Voltar"
+                                on_release: 
+                                    gerenciador_produtos.transition.direction = "up"
+                                    gerenciador_produtos.current = "mostrar produtos"
+
+                            Botao:
+                                text: "Adicionar"
+                                on_release: 
+                                    gerenciador_produtos.transition.direction = "up"
+                                    if adicionar_produto_nome.text != "" and adicionar_produto_preco.text != "": gerenciador_produtos.current = "mostrar produtos"
+                                    if adicionar_produto_nome.text != "" and adicionar_produto_preco.text != "": scroll_produtos.adicionar_produto(adicionar_produto_imagem.source, adicionar_produto_nome.text, adicionar_produto_preco.text)
+
+                Screen:
+                    name: "editar produtos"
+                    BoxLayout:
+                        orientation: "vertical"
+                        BoxLayout:
+                            orientation: 'vertical'
+                            padding: 20
+                            spacing: 15
+                            Label:
+                                size_hint_y: 0.15
+                                text: "Escolha uma imagem"
+                                bold: True
+                                color: 0, 0, 0, 1
+                                font_size: 80
+
+                            AsyncImage:
+                                id: editar_produto_imagem
+                                source: "imagens/logo.png"
+                                size: self.parent.size
+                                pos: self.parent.pos
+                                Button:
+                                    size: self.parent.size
+                                    pos: self.parent.pos
+                                    background_color: 0, 0, 0, 0
+                                    on_release: 
+                                        app.root.file_chooser(gerenciador_produtos.current)
+
+                            TextInput:
+                                id: editar_produto_nome
+                                font_size: 80
+                                text: ""
+                                hint_text: "Nome do produto"
+                                multiline: False
+                                halign: "center"
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: 0, 0, 0, 1
+                                    Line:
+                                        rectangle: (self.x, self.y + self.height - self.font_size - 30 - 10, self.width, self.font_size + 30)
+                                        width: 5
+
+                            TextInput:
+                                id: editar_produto_preco
+                                font_size: 80
+                                text: ""
+                                input_type: 'number'
+                                input_filter: 'int'
+                                hint_text: "Preço do produto"
+                                multiline: False
+                                halign: "center"
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: 0, 0, 0, 1
+                                    Line:
+                                        rectangle: (self.x, self.y + self.height - self.font_size - 30 - 10, self.width, self.font_size + 30)
+                                        width: 5
+
+                        BoxLayout:
+                            size_hint_y: 0.15
+                            Botao:
+                                text: "Voltar"
+                                on_release: 
+                                    gerenciador_produtos.transition.direction = "up"
+                                    gerenciador_produtos.current = "mostrar produtos"
+
+                            Botao:
+                                text: "Excluir"
+                                on_release: 
+                                    gerenciador_produtos.transition.direction = "up"
+                                    gerenciador_produtos.current = "mostrar produtos"
+                                    scroll_produtos.excluir_produto()
+
+                            Botao:
+                                text: "Concluir"
+                                on_release: 
+                                    gerenciador_produtos.transition.direction = "up"
+                                    if editar_produto_nome.text != "" and editar_produto_preco.text != "": scroll_produtos.editar_produto(editar_produto_imagem.source, editar_produto_nome.text, editar_produto_preco.text)
+                                    if editar_produto_nome.text != "" and editar_produto_preco.text != "": gerenciador_produtos.current = "mostrar produtos"
+
+                Screen:
+                    name: "tela subprodutos"
+                    ScreenManager:
+                        id: gerenciador_subprodutos
+                        Screen:
+                            name: "mostrar subprodutos"
+                            on_pre_enter: total_subproduto.text = "TOTAL: R$" + "{:,.2f}".format(scroll_subprodutos.preco_total(pesquisar_subprodutos.text.strip().lower()))
+                            BoxLayout:
+                                spacing: 10
+                                orientation: "vertical"
+                                Button:
+                                    id: total_subproduto
+                                    size_hint_y: 0.1
+                                    bold: True
+                                    italic: True
+                                    text: "TOTAL: R$" + "{:,.2f}".format(scroll_subprodutos.preco_total(pesquisar_subprodutos.text.strip().lower()))
+                                    color: 1, 1, 1, 1
+                                    background_color: 0, 0, 0, 0
+                                    font_size: 80
+                                    on_release: 
+                                        self.text = "TOTAL: R$" + "{:,.2f}".format(scroll_subprodutos.preco_total(pesquisar_subprodutos.text.strip().lower()))
+                                    canvas.before:
+                                        Color:
+                                            rgba: 1, 36/255, 148/255, 1
+                                        Rectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                    
+                                BoxLayout:
+                                    size_hint_y: None
+                                    height: 80
+                                    BoxLayout:
+                                        size_hint_x: 0.1
+
+                                    TextInput:
+                                        id: pesquisar_subprodutos
+                                        hint_text: "Pesquisar subproduto"
+                                        size_hint_x: 0.6
+                                        multiline: False
+                                        on_text_validate: 
+                                            total_subproduto.text = "TOTAL: R$" + "{:,.2f}".format(scroll_subprodutos.preco_total(self.text.strip().lower()))
+                                            scroll_subprodutos.pesquisar(self.text.strip().lower())
+
+                                        halign: "center"
+                                        background_color: 0, 0, 0, 0
+                                        canvas.before:
+                                            Color:
+                                                rgba: 0, 0, 0, 1
+                                            Line:
+                                                rectangle: (self.x, self.y, self.width, self.height)
+                                                width: 5
+                                    
+                                    Button:
+                                        size_hint_x: 0.2
+                                        background_color: 0, 0, 0, 0
+                                        color: 0.7, 0, 0, 1
+                                        text: "Limpar"
+                                        bold: True
+                                        on_release: 
+                                            pesquisar_subprodutos.text = ""
+                                            scroll_subprodutos.atualizar()
+                                            total_subproduto.text = "TOTAL: R$" + "{:,.2f}".format(scroll_subprodutos.preco_total(self.text.strip().lower()))
+
+                                    BoxLayout:
+                                        size_hint_x: 0.1
+                                        
+                                ScrollView:
+                                    size_hint_y: 0.8
+                                    bar_color: 0, 0, 0, 0
+                                    Scroll_subprodutos:
+                                        id: scroll_subprodutos
+                                        orientation: 'vertical'
+                                        spacing: 30
+                                        padding: 30
+                                        size_hint_y: None
+                                        height: self.minimum_height
+
+                                        Button:
+                                            size_hint: None, None
+                                            height: 150
+                                            on_release: 
+                                                gerenciador_subprodutos.transition.direction = "down"
+                                                gerenciador_subprodutos.current = "adicionar subprodutos"
+                                            bold: True
+                                            width: self.parent.width - self.parent.padding[0] * 2
+                                            x: 0
+                                            text: "+"
+                                            background_color: (0, 0, 0, 0)
+                                            color: (1, 1, 1, 1)
+                                            font_size: 120
+                                            canvas.before:
+                                                Color:
+                                                    rgba: (1, .29, .655, 1) if self.state=='normal' else (.9, .1, .4, 1)
+                                                RoundedRectangle:
+                                                    pos: self.pos
+                                                    size: self.size
+                                                    radius: [30,]
+                        
+                        Screen:
+                            on_pre_enter:
+                                adicionar_subproduto_quantidade.text = ""
+                                adicionar_subproduto_nome.text = ""
+                                adicionar_subproduto_imagem.source = "imagens/logo.png"
+                                
+                            name: "adicionar subprodutos"
+                            BoxLayout:
+                                orientation: "vertical"
+                                BoxLayout:
+                                    orientation: 'vertical'
+                                    padding: 20
+                                    spacing: 15
+                                    Label:
+                                        size_hint_y: 0.15
+                                        text: "Escolha uma imagem"
+                                        bold: True
+                                        color: 0, 0, 0, 1
+                                        font_size: 80
+
+                                    AsyncImage:
+                                        id: adicionar_subproduto_imagem
+                                        source: "imagens/logo.png"
+                                        Button:
+                                            size: self.parent.size
+                                            pos: self.parent.pos
+                                            background_color: 0, 0, 0, 0
+                                            on_release: 
+                                                app.root.file_chooser(gerenciador_subprodutos.current)
+
+                                    TextInput:
+                                        id: adicionar_subproduto_nome
+                                        font_size: 80
+                                        text: ""
+                                        hint_text: "Nome do subproduto"
+                                        multiline: False
+                                        halign: "center"
+                                        background_color: 0, 0, 0, 0
+                                        canvas.before:
+                                            Color:
+                                                rgba: 0, 0, 0, 1
+                                            Line:
+                                                rectangle: (self.x, self.y + self.height - self.font_size - 30 - 10, self.width, self.font_size + 30)
+                                                width: 5
+
+                                    TextInput:
+                                        id: adicionar_subproduto_quantidade
+                                        font_size: 80
+                                        text: ""
+                                        input_type: 'number'
+                                        input_filter: 'int'
+                                        hint_text: "Quantidade do subproduto"
+                                        multiline: False
+                                        halign: "center"
+                                        background_color: 0, 0, 0, 0
+                                        canvas.before:
+                                            Color:
+                                                rgba: 0, 0, 0, 1
+                                            Line:
+                                                rectangle: (self.x, self.y + self.height - self.font_size - 30 - 10, self.width, self.font_size + 30)
+                                                width: 5
+
+                                BoxLayout:
+                                    size_hint_y: 0.15
+                                    Botao:
+                                        text: "Voltar"
+                                        on_release: 
+                                            gerenciador_subprodutos.transition.direction = "up"
+                                            gerenciador_subprodutos.current = "mostrar subprodutos"
+
+                                    Botao:
+                                        text: "Adicionar"
+                                        on_release: 
+                                            gerenciador_subprodutos.transition.direction = "up"
+                                            if adicionar_subproduto_nome.text != "" and adicionar_subproduto_quantidade.text != "": gerenciador_subprodutos.current = "mostrar subprodutos"
+                                            if adicionar_subproduto_nome.text != "" and adicionar_subproduto_quantidade.text != "": scroll_subprodutos.adicionar_subproduto(adicionar_subproduto_imagem.source, adicionar_subproduto_nome.text, adicionar_subproduto_quantidade.text)
+    
+                            
+                        Screen:
+                            name: "editar subprodutos"
+                            BoxLayout:
+                                orientation: "vertical"
+                                BoxLayout:
+                                    orientation: 'vertical'
+                                    padding: 20
+                                    spacing: 15
+                                    Label:
+                                        size_hint_y: 0.15
+                                        text: "Escolha uma imagem"
+                                        bold: True
+                                        color: 0, 0, 0, 1
+                                        font_size: 80
+
+                                    AsyncImage:
+                                        id: editar_subproduto_imagem
+                                        source: "imagens/logo.png"
+                                        Button:
+                                            size: self.parent.size
+                                            pos: self.parent.pos
+                                            background_color: 0, 0, 0, 0
+                                            on_release: 
+                                                app.root.file_chooser(gerenciador_subprodutos.current)
+
+                                    TextInput:
+                                        id: editar_subproduto_nome
+                                        font_size: 80
+                                        text: ""
+                                        hint_text: "Nome do subproduto"
+                                        multiline: False
+                                        halign: "center"
+                                        background_color: 0, 0, 0, 0
+                                        canvas.before:
+                                            Color:
+                                                rgba: 0, 0, 0, 1
+                                            Line:
+                                                rectangle: (self.x, self.y + self.height - self.font_size - 30 - 10, self.width, self.font_size + 30)
+                                                width: 5
+
+                                    TextInput:
+                                        id: editar_subproduto_quantidade
+                                        font_size: 80
+                                        text: ""
+                                        input_type: 'number'
+                                        input_filter: 'int'
+                                        hint_text: "Quantidade do subproduto"
+                                        multiline: False
+                                        halign: "center"
+                                        background_color: 0, 0, 0, 0
+                                        canvas.before:
+                                            Color:
+                                                rgba: 0, 0, 0, 1
+                                            Line:
+                                                rectangle: (self.x, self.y + self.height - self.font_size - 30 - 10, self.width, self.font_size + 30)
+                                                width: 5
+
+                                BoxLayout:
+                                    size_hint_y: 0.15
+                                    Botao:
+                                        text: "Voltar"
+                                        on_release: 
+                                            gerenciador_subprodutos.current = "mostrar subprodutos"
+
+                                    Botao:
+                                        text: "Excluir"
+                                        on_release: 
+                                            gerenciador_subprodutos.transition.direction = "up"
+                                            gerenciador_subprodutos.current = "mostrar subprodutos"
+                                            scroll_subprodutos.excluir_subproduto()
+
+                                    Botao:
+                                        text: "Concluir"
+                                        on_release: 
+                                            gerenciador_subprodutos.transition.direction = "up"
+                                            if editar_subproduto_nome.text != "" and editar_subproduto_quantidade.text != "": gerenciador_subprodutos.current = "mostrar subprodutos"
+                                            if editar_subproduto_nome.text != "" and editar_subproduto_quantidade.text != "": scroll_subprodutos.editar_subproduto(editar_subproduto_imagem.source, editar_subproduto_nome.text, editar_subproduto_quantidade.text)
+
+                        Screen:
+                            name: "imagens subprodutos"
+                            on_pre_enter: scroll_imagens_subprodutos.atualizar()
+                            BoxLayout:
+                                ScrollView:
+                                    bar_color: 0, 0, 0, 0
+                                    Scroll_imagens_subprodutos:
+                                        orientation: 'vertical'
+                                        spacing: 30
+                                        padding: 30
+                                        size_hint_y: None
+                                        height: self.minimum_height
+                                        id: scroll_imagens_subprodutos
+
+                                        Button:
+                                            size_hint: None, None
+                                            height: 150
+                                            on_release: scroll_imagens_subprodutos.copiar_todas_as_imagens()
+                                            bold: True
+                                            width: self.parent.width - self.parent.padding[0] * 2
+                                            x: 0
+                                            text: "Copiar imagens"
+                                            background_color: (0, 0, 0, 0)
+                                            color: (1, 1, 1, 1)
+                                            font_size: 80
+                                            canvas.before:
+                                                Color:
+                                                    rgba: (1, .29, .655, 1) if self.state=='normal' else (.9, .1, .4, 1)
+                                                RoundedRectangle:
+                                                    pos: self.pos
+                                                    size: self.size
+                                                    radius: [30,]
+
+                                        Button:
+                                            size_hint: None, None
+                                            height: 150
+                                            on_release: app.root.file_chooser("imagens subprodutos")
+                                            bold: True
+                                            width: self.parent.width - self.parent.padding[0] * 2
+                                            x: 0
+                                            text: "+"
+                                            background_color: (0, 0, 0, 0)
+                                            color: (1, 1, 1, 1)
+                                            font_size: 120
+                                            canvas.before:
+                                                Color:
+                                                    rgba: (1, .29, .655, 1) if self.state=='normal' else (.9, .1, .4, 1)
+                                                RoundedRectangle:
+                                                    pos: self.pos
+                                                    size: self.size
+                                                    radius: [30,]
+
+<Caixa_colecao>:
+    background_color: (0, 0, 0, 0)
+    halign: "center"
+    height: 200
+    canvas.before:
+        Color:
+            rgba: (1, 74 / 255, 167 / 255, 1) if self.state=='normal' else (0.9, .1, .4, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [30,]
+    
+    bold: True
+    background_color: (0, 0, 0, 0)
+    color: (1, 1, 1, 1)
+    font_size: 80
+    on_release: 
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_colecoes.transition.direction = "down"
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.atualizar(self.id_colecao)
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.colecao_selecionada = self.id_colecao
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_colecoes.colecao_selecionada = self.id_colecao
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_colecoes.current = "tela produtos"
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.pesquisar_produtos.hint_text = "Pesquisar em " + app.conteudo["colecoes_estoque"][app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_colecoes.colecao_selecionada - 1]["colecao"]
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.total_produto.text =  "TOTAL: R$" + "{:,.2f}".format(app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.preco_total(app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.pesquisar_produtos.text.strip().lower()))
+
+    Image:
+        source: "imagens/edit.png"
+        size_hint: None, None
+        size: self.parent.height, self.parent.height
+        y: self.parent.y
+        x: self.parent.x + self.parent.width - self.width
+
+        Button:
+            pos: self.parent.pos
+            size: self.parent.size
+            background_color: (0, 0, 0, 0)
+            on_release: 
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_colecoes.transition.direction = "down"
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_colecoes.current = "editar colecoes"
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_colecoes_texto.text = self.parent.parent.text
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_colecoes.editando_colecao_id = self.parent.parent.id_colecao
+
+<Caixa_produto>:
+    background_color: (0, 0, 0, 0)
+    halign: "center"
+    height: 250
+    canvas.before:
+        Color:
+            rgba: (1, 74 / 255, 167 / 255, 1) if self.state=='normal' else (0.9, .1, .4, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [30,]
+    
+    bold: True
+    background_color: (0, 0, 0, 0)
+    color: (1, 1, 1, 1)
+    font_size: 80
+    on_release: 
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_produtos.transition.direction = "down"
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_subprodutos.atualizar(self.id_produto)
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.produto_selecionado = self.id_produto
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_subprodutos.produto_selecionado = self.id_produto
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_subprodutos.colecao_selecionada = app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.produtos[self.id_produto - 1]["id_colecao"]
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_produtos.current = "tela subprodutos"
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.pesquisar_subprodutos.hint_text = "Pesquisar em " + app.conteudo["colecoes_estoque"][app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_colecoes.colecao_selecionada - 1]["colecao"] + " " + app.conteudo["produtos_estoque"][app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.produto_selecionado - 1]["produto"]
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.total_subproduto.text =  "TOTAL: R$" + "{:,.2f}".format(app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_subprodutos.preco_total(app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.pesquisar_subprodutos.text.strip().lower()))
+    
+    AsyncImage:
+        id: imagem_produto
+        source: ""
+        size_hint: None, None
+        size: self.parent.height * .8, self.parent.height * .8
+        y: self.parent.y + self.parent.height * .1
+        x: self.parent.x *1.5
+        Button:
+            background_color: 0, 0, 0, 0
+            pos: self.parent.pos
+            size: self.parent.size
+            on_release: app.root.copiar_imagem(self.parent)
+
+    Image:
+        source: "imagens/edit.png"
+        size_hint: None, None
+        size: self.parent.height, self.parent.height
+        y: self.parent.y
+        x: self.parent.x + self.parent.width - self.width
+
+        Button:
+            pos: self.parent.pos
+            size: self.parent.size
+            background_color: (0, 0, 0, 0)
+            on_release: 
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_produtos.transition.direction = "down"
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_produtos.current = "editar produtos"
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_produto_nome.text = app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.produtos[self.parent.parent.id_produto - 1]["produto"]
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_produto_preco.text = str(app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.produtos[self.parent.parent.id_produto - 1]["preco"])
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_produto_imagem.source = app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.produtos[self.parent.parent.id_produto - 1]["imagem"]
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.editando_produto_id = self.parent.parent.id_produto
+
+<Caixa_subproduto>:
+    background_color: (0, 0, 0, 0)
+    halign: "center"
+    height: 250
+    canvas.before:
+        Color:
+            rgba: (1, 74 / 255, 167 / 255, 1) if self.state=='normal' else (0.9, .1, .4, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [30,]
+    
+    on_release: 
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_imagens_subprodutos.id_subproduto = self.id_subproduto
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_subprodutos.current = "imagens subprodutos"
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_subprodutos.transition.direction = "down"
+        app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_imagens_subprodutos.atualizar()
+    bold: True
+    background_color: (0, 0, 0, 0)
+    color: (1, 1, 1, 1)
+    font_size: 80
+    AsyncImage:
+        id: imagem_produto
+        source: ""
+        size_hint: None, None
+        size: self.parent.height * .8, self.parent.height * .8
+        y: self.parent.y + self.parent.height * .1
+        x: self.parent.x * 1.5
+        Button:
+            background_color: 0, 0, 0, 0
+            pos: self.parent.pos
+            size: self.parent.size
+            on_release: app.root.copiar_imagem(self.parent)
+
+    Image:
+        source: "imagens/edit.png"
+        size_hint: None, None
+        size: self.parent.height, self.parent.height
+        y: self.parent.y
+        x: self.parent.x + self.parent.width - self.width
+
+        Button:
+            pos: self.parent.pos
+            size: self.parent.size
+            background_color: (0, 0, 0, 0)
+            on_release: 
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_subprodutos.transition.direction = "down"
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_subprodutos.current = "editar subprodutos"
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_subproduto_nome.text = app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_subprodutos.subprodutos[self.parent.parent.id_subproduto - 1]["subproduto"]
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_subproduto_quantidade.text = str(app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_subprodutos.subprodutos[self.parent.parent.id_subproduto - 1]["quantidade"])
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_subproduto_imagem.source = app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_subprodutos.subprodutos[self.parent.parent.id_subproduto - 1]["imagem"]
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_subprodutos.editando_subproduto_id = self.parent.parent.id_subproduto
+
+<Caixa_imagens_subprodutos>:
+    height: 500
+    size_hint_y: None
+    AsyncImage:
+        id: imagem
+        size_hint_x: 0.8
+        Button:
+            background_color: 0, 0, 0, 0
+            pos: self.parent.pos
+            size: self.parent.size
+            on_release: app.root.copiar_imagem(self.parent)
+    
+    Button:
+        size_hint_x: 0.2
+        background_color: 0, 0, 0, 0
+        color: 0, 0, 0, 1
+        text: "x"
+        font_size: 120
+        bold: True
+        on_release: 
+            app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_imagens_subprodutos.excluir(self.parent.id)
+            app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_imagens_subprodutos.atualizar(self.parent.id_subproduto)
+#

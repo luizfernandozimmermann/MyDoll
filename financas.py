@@ -6,9 +6,11 @@ from kivy.app import App
 from datetime import date
 
 
+
 class Scroll_financas_atual(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.anos = [str(date.today().year), str(date.today().year + 1), str(date.today().year + 2)]
         self.atualizar()
         self.dia_atual = str(date.today().day)
         if len(self.dia_atual) == 1:

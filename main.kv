@@ -1,0 +1,171 @@
+#: include menu.kv
+#: include estoque.kv
+#: include feiras.kv
+#: include agenda.kv
+#: include historico.kv
+#: include financas.kv
+
+<Geral>:
+    orientation: 'vertical'
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    ScreenManager:
+        id: gerenciador_telas_principal
+        size_hint_y: 0.9
+        Tela_menu:
+
+        Tela_estoque:
+
+        Tela_feira:
+
+        Tela_agenda:
+
+        Tela_historico:
+
+        Tela_financas:
+        
+        Screen:
+            name: "administrador"
+            on_pre_enter: 
+                salvar_json.text = ""
+                administrador_mensagens.text = ""
+            BoxLayout:
+                orientation: "vertical"
+                spacing: 20
+                padding: 20
+                Label:
+                    id: administrador_mensagens
+                    size_hint_y: 0.1
+                    bold: True
+                    font_size: 40
+                    color: 0, 0, 0, 1
+
+                BoxLayout:
+                    Button:
+                        text: "JSON -> SQL"
+                        on_release: app.root.json_to_sql()
+                    
+                    Button:
+                        text: "SQL -> JSON"
+                        on_release: app.root.sql_to_json()
+
+                BoxLayout:
+                    Button:
+                        text: "Copiar JSON"
+                        on_release: app.root.copiar_json()
+
+                BoxLayout:
+                    TextInput:
+                        id: salvar_json
+                        hint_text: "Salvar JSON"
+
+                    Button:
+                        text: "Salvar JSON"
+                        on_release: app.root.salvar_json(salvar_json.text)
+
+
+    BoxLayout:
+        size_hint_y: 0.1
+        spacing: 20
+        BoxLayout:
+            padding: 5
+            Image: 
+                allow_stretch: True
+                source: "imagens/menu.png"
+                Botao:
+                    pos: self.parent.pos
+                    size: self.parent.size
+                    on_release: 
+                        gerenciador_telas_principal.transition.direction = "right"
+                        gerenciador_telas_principal.current = "menu"
+                        app.root.resetar_screenmanagers()
+            
+        BoxLayout:
+            padding: 5
+            Image:
+                allow_stretch: True
+                source: "imagens/estoque.png"
+                Botao:
+                    pos: self.parent.pos
+                    size: self.parent.size
+                    on_release: 
+                        if gerenciador_telas_principal.current == "menu": gerenciador_telas_principal.transition.direction = "left"
+                        if gerenciador_telas_principal.current == "feiras": gerenciador_telas_principal.transition.direction = "right"
+                        if gerenciador_telas_principal.current == "agenda": gerenciador_telas_principal.transition.direction = "right"
+                        if gerenciador_telas_principal.current == "historico": gerenciador_telas_principal.transition.direction = "right"
+                        if gerenciador_telas_principal.current == "financas": gerenciador_telas_principal.transition.direction = "right"
+                        gerenciador_telas_principal.current = "estoque"
+                        app.root.resetar_screenmanagers()
+
+        BoxLayout:
+            padding: 5
+            Image:
+                allow_stretch: True
+                source: "imagens/feiras.png"
+                Botao:
+                    pos: self.parent.pos
+                    size: self.parent.size
+                    on_release: 
+                        if gerenciador_telas_principal.current == "menu": gerenciador_telas_principal.transition.direction = "left"
+                        if gerenciador_telas_principal.current == "estoque": gerenciador_telas_principal.transition.direction = "left"
+                        if gerenciador_telas_principal.current == "agenda": gerenciador_telas_principal.transition.direction = "right"
+                        if gerenciador_telas_principal.current == "historico": gerenciador_telas_principal.transition.direction = "right"
+                        if gerenciador_telas_principal.current == "financas": gerenciador_telas_principal.transition.direction = "right"
+                        gerenciador_telas_principal.current = "feiras"
+                        app.root.resetar_screenmanagers()
+            
+        BoxLayout:
+            padding: 5
+            Image:
+                allow_stretch: True
+                source: "imagens/agenda.png"
+                Botao:
+                    pos: self.parent.pos
+                    size: self.parent.size
+                    on_release: 
+                        if gerenciador_telas_principal.current == "menu": gerenciador_telas_principal.transition.direction = "left"
+                        if gerenciador_telas_principal.current == "estoque": gerenciador_telas_principal.transition.direction = "left"
+                        if gerenciador_telas_principal.current == "feiras": gerenciador_telas_principal.transition.direction = "left"
+                        if gerenciador_telas_principal.current == "historico": gerenciador_telas_principal.transition.direction = "right"
+                        if gerenciador_telas_principal.current == "financas": gerenciador_telas_principal.transition.direction = "right"
+                        gerenciador_telas_principal.current = "agenda"
+                        app.root.resetar_screenmanagers()
+            
+        BoxLayout:
+            padding: 5
+            Image:
+                allow_stretch: True
+                source: "imagens/historico.png"
+                Botao:
+                    pos: self.parent.pos
+                    size: self.parent.size
+                    background_color: 0, 0, 0, 0
+                    on_release: 
+                        if gerenciador_telas_principal.current == "menu": gerenciador_telas_principal.transition.direction = "left"
+                        if gerenciador_telas_principal.current == "estoque": gerenciador_telas_principal.transition.direction = "left"
+                        if gerenciador_telas_principal.current == "feiras": gerenciador_telas_principal.transition.direction = "left"
+                        if gerenciador_telas_principal.current == "agenda": gerenciador_telas_principal.transition.direction = "left"
+                        if gerenciador_telas_principal.current == "financas": gerenciador_telas_principal.transition.direction = "right"
+                        gerenciador_telas_principal.current = "historico"
+                        app.root.resetar_screenmanagers()
+        
+        BoxLayout:
+            padding: 5
+            Image:
+                allow_stretch: True
+                source: "imagens/financas.png"
+                Botao:
+                    pos: self.parent.pos
+                    size: self.parent.size
+                    background_color: 0, 0, 0, 0
+                    on_release: 
+                        gerenciador_telas_principal.transition.direction = "left"
+                        gerenciador_telas_principal.current = "financas"
+                        app.root.resetar_screenmanagers()
+
+#

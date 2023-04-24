@@ -1,0 +1,552 @@
+<Tela_financas@Screen>:
+    name: "financas"
+    on_pre_enter:
+        scroll_financas_atual.atualizar()
+        scroll_financas_historico.atualizar()
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout:
+            size_hint_y: 0.15
+            padding: 30
+            spacing: 15
+            BoxLayout:
+                background_color: 1, 36/255, 148/255, 1
+                canvas:
+                    Color:
+                        rgba: self.background_color
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                Button:
+                    id: botao_financas
+                    background_color: 0, 0, 0, 0
+                    on_release:
+                        gerenciador_financas.transition.direction = "right"
+                        gerenciador_financas.current = "financas atual"
+                        self.parent.background_color = 1, 36/255, 148/255, 1
+                        botao_financas_historico.parent.background_color = 0, 0, 0, 0.1
+                        scroll_financas_atual.atualizar()
+                    size_hint_x: None
+                    size_hint_y: None
+                    height: self.parent.height
+                    width: self.parent.width
+                    AsyncImage:
+                        id: imagem_produtos_historico
+                        source: "imagens/logo.png"
+                        allow_stretch: True
+                        size_hint_y: None
+                        size_hint_x: None
+                        size: self.parent.height, self.parent.height
+                        center: self.parent.center
+                    
+            BoxLayout:
+                background_color: 0, 0, 0, 0.1
+                canvas:
+                    Color:
+                        rgba: self.background_color
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                Button:
+                    id: botao_financas_historico
+                    background_color: 0, 0, 0, 0
+                    on_release: 
+                        gerenciador_financas.transition.direction = "left"
+                        gerenciador_financas.current = "financas historico"
+                        botao_financas.parent.background_color = 0, 0, 0, 0.1
+                        self.parent.background_color = 1, 36/255, 148/255, 1
+                        scroll_financas_historico.atualizar()
+                    size_hint_x: None
+                    size_hint_y: None
+                    height: self.parent.height
+                    width: self.parent.width
+                    AsyncImage:
+                        id: imagem_feiras_historico
+                        source: "imagens/historico.png"
+                        allow_stretch: True
+                        size_hint_y: None
+                        size_hint_x: None
+                        size: self.parent.height - 10, self.parent.height -10
+                        center: self.parent.center
+
+        BoxLayout:
+            ScreenManager:
+                id: gerenciador_financas
+                Screen:
+                    name: "financas atual"
+                    ScreenManager: 
+                        id: gerenciador_financas_atual
+                        Screen:
+                            name: "financas atual principal"
+                            ScrollView:
+                                bar_color: 0, 0, 0, 0
+                                Scroll_financas_atual:
+                                    id: scroll_financas_atual
+                                    orientation: "vertical"
+                                    size_hint_y: None
+                                    height: self.minimum_height
+                                    padding: 30
+                                    spacing: 30
+
+                                    Button:
+                                        size_hint_y: None
+                                        height: 150
+                                        canvas.before:
+                                            Color:
+                                                rgba: (1, 74 / 255, 167 / 255, 1)
+                                            RoundedRectangle:
+                                                pos: self.pos
+                                                size: self.size
+                                                radius: [30,]
+                                        
+                                        on_release: 
+                                            gerenciador_financas_atual.current = "financas atual adicionando"
+                                            gerenciador_financas_atual.transition.direction = "down"
+                                        background_color: 0, 0, 0, 0
+                                        text: "+"
+                                        bold: True
+                                        font_size: 120
+
+                                    BoxLayout:
+                                        height: 150
+                                        size_hint_y: None
+                                        BoxLayout:
+                                            size_hint_x: .25
+                                        Button:
+                                            size_hint_x: .5
+                                            background_color: 0, 0, 0, 0
+                                            canvas.before:
+                                                Color:
+                                                    rgba: (1, 74 / 255, 167 / 255, 1)
+                                                RoundedRectangle:
+                                                    pos: self.pos
+                                                    size: self.size
+                                                    radius: [30,]
+                                            text: "Concluir mês"
+                                            color: 1, 1, 1, 1
+                                            bold: True
+                                            font_size: 80
+                                            on_release: scroll_financas_atual.concluir_mes()
+
+                                        BoxLayout:
+                                            size_hint_x: .25
+
+                        Screen:
+                            name: "financas atual adicionando"
+                            on_pre_enter:
+                                produto_financas_adicionando.text = ""
+                                local_financas_adicionando.text = ""
+                                preco_financas_adicionando.text = ""
+                                forma_pagamento_financas_adicionando.text = "•Forma de pagamento"
+                                dia_financas_adicionando.text = scroll_financas_atual.dia_atual
+                                mes_financas_adicionando.text = scroll_financas_atual.mes_atual
+                                ano_financas_adicionando.text = scroll_financas_atual.ano_atual
+                                descricao_financas_adicionando.text = ""
+                            BoxLayout:
+                                orientation: "vertical"
+                                BoxLayout:
+                                    size_hint_y: 0.85
+                                    padding: 50
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        spacing: 40
+                                        TextInput:
+                                            id: produto_financas_adicionando
+                                            multiline: False
+                                            hint_text: "Produto"
+                                            font_size: 70
+                                            height: 100
+                                            size_hint_y: None
+                                            halign: "center"
+                                            background_color: 0, 0, 0, 0
+                                            canvas.before:
+                                                Color:
+                                                    rgba: 0, 0, 0, 1
+                                                Line:
+                                                    rectangle: (self.x, self.y, self.width, self.height)
+                                                    width: 5
+
+                                        TextInput:
+                                            id: local_financas_adicionando
+                                            hint_text: "Local ou loja"
+                                            font_size: 70
+                                            height: 100
+                                            multiline: False
+                                            size_hint_y: None
+                                            halign: "center"
+                                            background_color: 0, 0, 0, 0
+                                            canvas.before:
+                                                Color:
+                                                    rgba: 0, 0, 0, 1
+                                                Line:
+                                                    rectangle: (self.x, self.y, self.width, self.height)
+                                                    width: 5
+
+                                        TextInput:
+                                            id: preco_financas_adicionando
+                                            hint_text: "Preço pago"
+                                            halign: "center"
+                                            multiline: False
+                                            input_filter: "float" 
+                                            font_size: 70
+                                            height: 100
+                                            size_hint_y: None
+                                            background_color: 0, 0, 0, 0
+                                            canvas.before:
+                                                Color:
+                                                    rgba: 0, 0, 0, 1
+                                                Line:
+                                                    rectangle: (self.x, self.y, self.width, self.height)
+                                                    width: 5
+
+                                        SpinnerDropdown:
+                                            id: forma_pagamento_financas_adicionando
+                                            text: "•Forma de pagamento"
+                                            background_color: 0, 0, 0, 0
+                                            color: 0, 0, 0, 1
+                                            font_size: 70
+                                            values: ["Pix", "Dinheiro físico", "Cartão de crédito", "Cartão de débito"]
+
+                                        BoxLayout:
+                                            SpinnerDropdown:
+                                                id: dia_financas_adicionando
+                                                text: scroll_financas_atual.dia_atual
+                                                color: 0, 0, 0, 1
+                                                background_color: 0, 0, 0, 0
+                                                font_size: 70
+                                                values: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"]
+
+                                            SpinnerDropdown:
+                                                id: mes_financas_adicionando
+                                                text: scroll_financas_atual.mes_atual
+                                                background_color: 0, 0, 0, 0
+                                                color: 0, 0, 0, 1
+                                                font_size: 70
+                                                values: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+
+                                            SpinnerDropdown:
+                                                id: ano_financas_adicionando
+                                                text: scroll_financas_atual.ano_atual
+                                                background_color: 0, 0, 0, 0
+                                                color: 0, 0, 0, 1
+                                                font_size: 70
+                                                values: scroll_financas_atual.anos
+
+                                        TextInput:
+                                            id: descricao_financas_adicionando
+                                            hint_text: "Descrição"
+                                            halign: "center"
+                                            multiline: False
+                                            font_size: 70
+                                            height: 100
+                                            size_hint_y: None
+                                            background_color: 0, 0, 0, 0
+                                            canvas.before:
+                                                Color:
+                                                    rgba: 0, 0, 0, 1
+                                                Line:
+                                                    rectangle: (self.x, self.y, self.width, self.height)
+                                                    width: 5
+                                
+                                BoxLayout:
+                                    size_hint_y: 0.15
+                                    Botao:
+                                        text: "Voltar"
+                                        on_release:
+                                            gerenciador_financas_atual.current = "financas atual principal"
+                                            gerenciador_financas_atual.transition.direction = "up"
+                                    
+                                    Botao:
+                                        text: "Adicionar"
+                                        on_release:
+                                            if produto_financas_adicionando.text != "" and local_financas_adicionando.text != "" and preco_financas_adicionando.text != "" and forma_pagamento_financas_adicionando.text != "•Forma de pagamento": gerenciador_financas_atual.current = "financas atual principal" 
+                                            gerenciador_financas_atual.transition.direction = "up"
+                                            if produto_financas_adicionando.text != "" and local_financas_adicionando.text != "" and preco_financas_adicionando.text != "" and forma_pagamento_financas_adicionando.text != "•Forma de pagamento": scroll_financas_atual.adicionar(produto_financas_adicionando.text, local_financas_adicionando.text, preco_financas_adicionando.text, forma_pagamento_financas_adicionando.text, dia_financas_adicionando.text, mes_financas_adicionando.text, ano_financas_adicionando.text, descricao_financas_adicionando.text)
+                                                
+
+                        Screen:
+                            name: "financas atual editando"
+                            BoxLayout:
+                                orientation: "vertical"
+                                BoxLayout:
+                                    size_hint_y: 0.85
+                                    padding: 50
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        spacing: 40
+                                        TextInput:
+                                            id: produto_financas_editando
+                                            text: "Produto"
+                                            multiline: False
+                                            font_size: 70
+                                            height: 100
+                                            size_hint_y: None
+                                            halign: "center"
+                                            background_color: 0, 0, 0, 0
+                                            canvas.before:
+                                                Color:
+                                                    rgba: 0, 0, 0, 1
+                                                Line:
+                                                    rectangle: (self.x, self.y, self.width, self.height)
+                                                    width: 5
+
+                                        TextInput:
+                                            id: local_financas_editando
+                                            text: "Local ou loja"
+                                            font_size: 70
+                                            height: 100
+                                            multiline: False
+                                            size_hint_y: None
+                                            halign: "center"
+                                            background_color: 0, 0, 0, 0
+                                            canvas.before:
+                                                Color:
+                                                    rgba: 0, 0, 0, 1
+                                                Line:
+                                                    rectangle: (self.x, self.y, self.width, self.height)
+                                                    width: 5
+
+                                        TextInput:
+                                            id: preco_financas_editando
+                                            text: "Preço pago"
+                                            multiline: False
+                                            halign: "center"
+                                            input_filter: "float" 
+                                            font_size: 70
+                                            height: 100
+                                            size_hint_y: None
+                                            background_color: 0, 0, 0, 0
+                                            canvas.before:
+                                                Color:
+                                                    rgba: 0, 0, 0, 1
+                                                Line:
+                                                    rectangle: (self.x, self.y, self.width, self.height)
+                                                    width: 5
+
+                                        SpinnerDropdown:
+                                            id: forma_pagamento_financas_editando
+                                            text: "•Forma de pagamento"
+                                            background_color: 0, 0, 0, 0
+                                            color: 0, 0, 0, 1
+                                            font_size: 70
+                                            values: ["Pix", "Dinheiro físico", "Cartão de crédito", "Cartão de débito"]
+
+                                        BoxLayout:
+                                            SpinnerDropdown:
+                                                id: dia_financas_editando
+                                                text: scroll_financas_atual.dia_atual
+                                                color: 0, 0, 0, 1
+                                                background_color: 0, 0, 0, 0
+                                                font_size: 70
+                                                values: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"]
+
+                                            SpinnerDropdown:
+                                                id: mes_financas_editando
+                                                text: scroll_financas_atual.mes_atual
+                                                background_color: 0, 0, 0, 0
+                                                color: 0, 0, 0, 1
+                                                font_size: 70
+                                                values: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+
+                                            SpinnerDropdown:
+                                                id: ano_financas_editando
+                                                text: scroll_financas_atual.ano_atual
+                                                background_color: 0, 0, 0, 0
+                                                color: 0, 0, 0, 1
+                                                font_size: 70
+                                                values: scroll_financas_atual.anos
+
+                                        TextInput:
+                                            id: descricao_financas_editando
+                                            text: "Descrição"
+                                            halign: "center"
+                                            font_size: 70
+                                            height: 100
+                                            multiline: False
+                                            size_hint_y: None
+                                            background_color: 0, 0, 0, 0
+                                            canvas.before:
+                                                Color:
+                                                    rgba: 0, 0, 0, 1
+                                                Line:
+                                                    rectangle: (self.x, self.y, self.width, self.height)
+                                                    width: 5
+
+                                BoxLayout:
+                                    size_hint_y: 0.15
+                                    Botao:
+                                        text: "Voltar"
+                                        on_release:
+                                            gerenciador_financas_atual.current = "financas atual principal"
+                                            gerenciador_financas_atual.transition.direction = "up"
+
+                                    Botao:
+                                        text: "Excluir"
+                                        on_release:
+                                            gerenciador_financas_atual.current = "financas atual principal"
+                                            gerenciador_financas_atual.transition.direction = "up"
+                                            scroll_financas_atual.excluir()
+                                    
+                                    Botao:
+                                        text: "Concluir"
+                                        on_release:
+                                            if produto_financas_editando.text != "" and local_financas_editando.text != "" and preco_financas_editando.text != "" and forma_pagamento_financas_editando.text != "•Forma de pagamento": gerenciador_financas_atual.current = "financas atual principal"
+                                            gerenciador_financas_atual.transition.direction = "up"
+                                            if produto_financas_editando.text != "" and local_financas_editando.text != "" and preco_financas_editando.text != "" and forma_pagamento_financas_editando.text != "•Forma de pagamento": scroll_financas_atual.editar(produto_financas_editando.text, local_financas_editando.text, preco_financas_editando.text, forma_pagamento_financas_editando.text, dia_financas_editando.text, mes_financas_editando.text, ano_financas_editando.text, descricao_financas_editando.text)
+
+
+                Screen:
+                    on_pre_enter: 
+                        filtro_mes_financas.values = scroll_financas_historico.meses_filtro()
+                        filtro_ano_financas.values = scroll_financas_historico.anos_filtro()
+                    name: "financas historico"
+                    BoxLayout:
+                        orientation: "vertical"
+                        BoxLayout:
+                            orientation: "horizontal"
+                            size_hint_y: 0.1
+                            height: 50
+                            spacing: 20
+                            padding: 10
+                            Label:
+                                text: "Filtrar por:"
+                                color: 0, 0, 0, 1
+                                font_size: 60
+                                
+                            SpinnerDropdown:
+                                id: filtro_mes_financas
+                                text: "Mês: Todos"
+                                background_color: 0, 0, 0, 0
+                                font_size: 60
+                                color: 0, 0, 0, 1
+                                on_text: 
+                                    scroll_financas_historico.filtro_atualizar(self.text[5:], filtro_ano_financas.text[5:])
+                                values: scroll_financas_historico.meses_filtro()
+
+                            SpinnerDropdown:
+                                id: filtro_ano_financas
+                                text: "Ano: Todos"
+                                font_size: 60
+                                values: scroll_financas_historico.anos_filtro()
+                                background_color: 0, 0, 0, 0
+                                color: 0, 0, 0, 1
+                                on_text: 
+                                    scroll_financas_historico.filtro_atualizar( filtro_mes_financas.text[5:], self.text[5:])
+                        ScrollView:
+                            bar_color: 0, 0, 0, 0
+                            size_hint_y: 0.9
+                            Scroll_financas_historico:
+                                id: scroll_financas_historico
+                                orientation: "vertical"
+                                size_hint_y: None
+                                height: self.minimum_height
+                                padding: 30
+                                spacing: 30
+
+<Caixa_financas_atual>:
+    size_hint_y: None
+    height: 300
+    canvas.before:
+        Color:
+            rgba: (1, 74 / 255, 167 / 255, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [30,]
+
+    BoxLayout:
+        id: caixa_financa_descricao_atual
+        orientation: "vertical"
+        size_hint_x: 0.8
+        Label:
+            id: nome_produto
+            text: ""
+            font_size: 60
+            bold: True
+            
+        
+        Label:
+            id: local
+            text: ""
+            font_size: 60
+            bold: True
+            
+        
+        Label:
+            id: preco
+            text: ""
+            font_size: 60
+            bold: True
+
+            
+        Label:
+            id: data
+            text: ""
+            font_size: 60
+            bold: True
+            
+
+    Image:
+        id: editar
+        size_hint_x: 0.2
+        source: "imagens/edit.png"
+        Button:
+            on_release: 
+                app.root.ids.gerenciador_telas_principal.get_screen("financas").ids.gerenciador_financas_atual.current = "financas atual editando"
+                app.root.ids.gerenciador_telas_principal.get_screen("financas").ids.gerenciador_financas_atual.transition.direction = "down"
+                app.root.ids.gerenciador_telas_principal.get_screen("financas").ids.scroll_financas_atual.editando_financas = self.parent.parent.id
+
+                app.root.ids.gerenciador_telas_principal.get_screen("financas").ids.produto_financas_editando.text = self.parent.parent.nome
+                app.root.ids.gerenciador_telas_principal.get_screen("financas").ids.local_financas_editando.text = self.parent.parent.local
+                app.root.ids.gerenciador_telas_principal.get_screen("financas").ids.preco_financas_editando.text = self.parent.parent.preco
+                app.root.ids.gerenciador_telas_principal.get_screen("financas").ids.forma_pagamento_financas_editando.text = self.parent.parent.forma_pagamento
+                app.root.ids.gerenciador_telas_principal.get_screen("financas").ids.descricao_financas_editando.text = self.parent.parent.descricao
+
+            background_color: 0, 0, 0, 0
+            size_hint_x: None
+            size_hint_y: None
+            height: self.parent.height
+            width: self.parent.width
+                
+
+<Caixa_financas_historico>:
+    size_hint_y: None
+    height: 250
+    canvas.before:
+        Color:
+            rgba: (1, 74 / 255, 167 / 255, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [30,]
+
+    BoxLayout:
+        orientation: "vertical"
+        id: caixa_financas_historico_textos
+        Label:
+            id: nome_produto
+            text: ""
+            font_size: self.parent.height * .2
+            bold: True
+            
+        
+        Label:
+            id: local
+            text: ""
+            font_size: self.parent.height * .2
+            bold: True
+            
+        
+        Label:
+            id: preco
+            text: ""
+            font_size: self.parent.height * .2
+            bold: True
+
+            
+        Label:
+            id: data
+            text: ""
+            font_size: self.parent.height * .2
+            bold: True
+#

@@ -1,0 +1,483 @@
+<Tela_agenda@Screen>:
+    name: "agenda"
+    on_pre_enter:
+        agenda_scroll.atualizar()
+    ScreenManager:
+        id: gerenciador_agenda
+        Screen:
+            name: "principal"
+            ScrollView:
+                bar_color: 0, 0, 0, 0
+                Agenda_scroll:
+                    id: agenda_scroll
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: self.minimum_height
+                    padding: 30
+                    spacing: 30
+
+                    Button:
+                        nome: "Butao"
+                        height: 150
+                        size_hint: None, None
+                        on_release: 
+                            gerenciador_agenda.transition.direction = "down"
+                            gerenciador_agenda.current = "adicionar"
+                        bold: True
+                        width: self.parent.width - self.parent.padding[0] * 2
+                        x: 0
+                        text: "+"
+                        background_color: (0, 0, 0, 0)
+                        color: (1, 1, 1, 1)
+                        font_size: 120
+                        canvas.before:
+                            Color:
+                                rgba: (1, .29, .655, 1) if self.state=='normal' else (.9, .1, .4, 1)
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [30,]
+        
+        Screen:
+            name: "adicionar"
+            on_pre_enter: 
+                spinner_agenda_adicionar_colecao.values = agenda_scroll.colecoes()
+                spinner_agenda_adicionar_colecao.text = "•Escolha uma coleção"
+                spinner_agenda_adicionar_produto.text = "•Escolha um produto"
+                spinner_agenda_adicionar_subproduto.text = "•Escolha um subproduto"
+                quantidade_subproduto_agenda_adicionar.text = ""
+                descricao_agenda_adicionar.text = ""
+            
+            BoxLayout:
+                orientation: "vertical"
+                BoxLayout:
+                    size_hint_y: 0.85
+                    orientation: "vertical"
+                    padding: 30
+                    spacing: 15
+                    BoxLayout:
+                        size_hint_y: 0.8
+                        spacing: 15
+                        orientation: "vertical"
+                        SpinnerDropdown:
+                            id: spinner_agenda_adicionar_colecao
+                            text: "•Escolha uma coleção"
+                            background_color: 0, 0, 0, 0
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            values: agenda_scroll.colecoes()
+                            on_text: spinner_agenda_adicionar_produto.values = agenda_scroll.procurar_produtos(self.text)
+
+                        SpinnerDropdown:
+                            id: spinner_agenda_adicionar_produto
+                            text: "•Escolha um produto"
+                            background_color: 0, 0, 0, 0
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            on_text: spinner_agenda_adicionar_subproduto.values = agenda_scroll.procurar_subprodutos(self.text)
+
+                        SpinnerDropdown:
+                            id: spinner_agenda_adicionar_subproduto
+                            text: "•Escolha um subproduto"
+                            background_color: 0, 0, 0, 0
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            
+                        BoxLayout:
+                            orientation: "vertical"
+                            spacing: 50
+                            TextInput:
+                                id: quantidade_subproduto_agenda_adicionar
+                                input_filter: "float"
+                                hint_text: "Quantidade"
+                                font_size: 70
+                                height: 100
+                                multiline: False
+                                size_hint_y: None
+                                halign: "center"
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: 0, 0, 0, 1
+                                    Line:
+                                        rectangle: (self.x, self.y, self.width, self.height)
+                                        width: 5
+                            
+                            TextInput:
+                                id: descricao_agenda_adicionar
+                                hint_text: "Descrição"
+                                halign: "center"
+                                font_size: 70
+                                height: 175
+                                multiline: False
+                                size_hint_y: None
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: 0, 0, 0, 1
+                                    Line:
+                                        rectangle: (self.x, self.y, self.width, self.height)
+                                        width: 5
+
+                    BoxLayout:
+                        size_hint_y: 0.2
+                        padding: 10
+                        SpinnerDropdown:
+                            id: dia_agenda_adicionar_subproduto
+                            text: "•Dia"
+                            background_color: 0, 0, 0, 0
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            values: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']
+                        
+                        SpinnerDropdown:
+                            id: mes_agenda_adicionar_subproduto
+                            text: "•Mês"
+                            background_color: 0, 0, 0, 0
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            values: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+                        
+                        SpinnerDropdown:
+                            id: ano_agenda_adicionar_subproduto
+                            text: "•Ano"
+                            background_color: 0, 0, 0, 0
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            values: agenda_scroll.anos
+                
+                BoxLayout:
+                    size_hint_y: 0.15
+                    Botao:
+                        text: "Voltar"
+                        on_release: 
+                            gerenciador_agenda.transition.direction = "up"
+                            gerenciador_agenda.current = "principal"
+                    
+                    Botao:
+                        text: "Adicionar"
+                        on_release: 
+                            if spinner_agenda_adicionar_subproduto.text != "•Escolha um subproduto" and dia_agenda_adicionar_subproduto.text.isnumeric() and mes_agenda_adicionar_subproduto.text.isnumeric() and ano_agenda_adicionar_subproduto.text.isnumeric() and quantidade_subproduto_agenda_adicionar.text.isnumeric(): gerenciador_agenda.current = "principal"
+                            gerenciador_agenda.transition.direction = "up"
+                            if spinner_agenda_adicionar_subproduto.text != "•Escolha um subproduto" and dia_agenda_adicionar_subproduto.text.isnumeric() and mes_agenda_adicionar_subproduto.text.isnumeric() and ano_agenda_adicionar_subproduto.text.isnumeric() and quantidade_subproduto_agenda_adicionar.text.isnumeric(): agenda_scroll.adicionar(spinner_agenda_adicionar_subproduto.text, quantidade_subproduto_agenda_adicionar.text, descricao_agenda_adicionar.text, dia_agenda_adicionar_subproduto.text, mes_agenda_adicionar_subproduto.text, ano_agenda_adicionar_subproduto.text)
+                            
+
+        Screen:
+            name: "editar"
+            on_pre_enter: spinner_agenda_editar_colecoes.values = agenda_scroll.colecoes()
+            BoxLayout:
+                orientation: "vertical"
+                BoxLayout:
+                    size_hint_y: 0.85
+                    orientation: "vertical"
+                    padding: 30
+                    spacing: 15
+                    BoxLayout:
+                        size_hint_y: 0.65
+                        spacing: 15
+                        orientation: "vertical"
+                        SpinnerDropdown:
+                            id: spinner_agenda_editar_colecoes
+                            text: "•Escolha uma coleção"
+                            background_color: 0, 0, 0, 0
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            values: agenda_scroll.colecoes()
+                            on_text: spinner_agenda_editar_produto.values = agenda_scroll.procurar_produtos(self.text)
+                        
+                        SpinnerDropdown:
+                            id: spinner_agenda_editar_produto
+                            text: "•Escolha um produto"
+                            background_color: 0, 0, 0, 0
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            on_text: spinner_agenda_editar_subproduto.values = agenda_scroll.procurar_produtos(self.text)
+
+                        SpinnerDropdown:
+                            id: spinner_agenda_editar_subproduto
+                            text: "•Escolha um subproduto"
+                            background_color: 0, 0, 0, 0
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            
+                        BoxLayout:
+                            orientation: "vertical"
+                            spacing: 50
+                            TextInput:
+                                id: quantidade_subproduto_agenda_editar
+                                input_filter: "float"
+                                hint_text: "Quantidade"
+                                font_size: 70
+                                height: 100
+                                multiline: False
+                                size_hint_y: None
+                                halign: "center"
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: 0, 0, 0, 1
+                                    Line:
+                                        rectangle: (self.x, self.y, self.width, self.height)
+                                        width: 5
+                            
+                            TextInput:
+                                id: descricao_agenda_editar
+                                hint_text: "Descrição"
+                                halign: "center"
+                                font_size: 70
+                                height: 100
+                                size_hint_y: None
+                                multiline: False
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: 0, 0, 0, 1
+                                    Line:
+                                        rectangle: (self.x, self.y, self.width, self.height)
+                                        width: 5
+
+                    BoxLayout:
+                        size_hint_y: 0.35
+                        padding: 10
+                        SpinnerDropdown:
+                            id: dia_agenda_editar_subproduto
+                            text: "•Dia"
+                            background_color: 0, 0, 0, 0
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            values: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']
+                        
+                        SpinnerDropdown:
+                            id: mes_agenda_editar_subproduto
+                            text: "•Mês"
+                            background_color: 0, 0, 0, 0
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            values: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+                        
+                        SpinnerDropdown:
+                            id: ano_agenda_editar_subproduto
+                            text: "•Ano"
+                            background_color: 0, 0, 0, 0
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            values: agenda_scroll.anos
+
+                BoxLayout:
+                    size_hint_y: 0.15
+                    Button:
+                        text: "Voltar"
+                        bold: True
+                        font_size: 80
+                        color: 0, 0, 0, 1
+                        background_color: 0, 0, 0, 0
+                        on_release: 
+                            gerenciador_agenda.current = "principal"
+                            gerenciador_agenda.transition.direction = "up"
+                    
+                    Botao:
+                        text: "Excluir"
+                        on_release: 
+                            agenda_scroll.excluir()
+                            gerenciador_agenda.current = "principal"
+                            gerenciador_agenda.transition.direction = "up"
+
+                    Botao:
+                        text: "Concluir"
+                        on_release: 
+                            if dia_agenda_editar_subproduto.text.isnumeric() and mes_agenda_editar_subproduto.text.isnumeric() and ano_agenda_editar_subproduto.text.isnumeric() and quantidade_subproduto_agenda_editar.text.isnumeric(): gerenciador_agenda.current = "principal"
+                            if dia_agenda_editar_subproduto.text.isnumeric() and mes_agenda_editar_subproduto.text.isnumeric() and ano_agenda_editar_subproduto.text.isnumeric() and quantidade_subproduto_agenda_editar.text.isnumeric():agenda_scroll.editar(spinner_agenda_editar_subproduto.text, quantidade_subproduto_agenda_editar.text, descricao_agenda_editar.text, dia_agenda_editar_subproduto.text, mes_agenda_editar_subproduto.text, ano_agenda_editar_subproduto.text)
+                            gerenciador_agenda.transition.direction = "up"
+
+        Screen:
+            name: "concluir"
+            on_pre_enter:
+                preco_subproduto_compromisso_saber_mais.text = ""
+                spinner_agenda_concluir_venda_pagamento.text = "•Forma de pagamento"
+                checkbox_agenda_concluir.active = True
+            
+            BoxLayout:
+                spacing: 10
+                orientation: "vertical"
+                BoxLayout:
+                    padding: 30
+                    size_hint_y: 0.45
+                    spacing: 15
+                    BoxLayout:
+                        size_hint_x: .5
+                        AsyncImage:
+                            id: imagem_compromisso_saber_mais
+                            source: ""
+                            allow_stretch: True
+                            center: self.parent.center
+                    
+                    BoxLayout:
+                        size_hint_x: 0.5
+                        orientation: "vertical"
+                        Label:
+                            id: data_compromisso_saber_mais
+                            bold: True
+                            text: ""
+                            font_size: 70
+                            color: 0, 0, 0, 1
+
+                        Label:
+                            id: nome_e_quantidade_subproduto_compromisso_saber_mais
+                            bold: True
+                            text: ""
+                            font_size: 70
+                            color: 0, 0, 0, 1
+                            
+                BoxLayout:
+                    padding: 30
+                    size_hint_y: .3
+                    spacing: 15
+                    orientation: "vertical"
+                    TextInput:
+                        id: preco_subproduto_compromisso_saber_mais
+                        input_filter: "float"
+                        font_size: 70
+                        height: 100
+                        multiline: False
+                        halign: "center"
+                        input_filter: "float"
+                        size_hint_y: None
+                        text: ""
+                        background_color: 0, 0, 0, 0
+                        canvas.before:
+                            Color:
+                                rgba: 0, 0, 0, 1
+                            Line:
+                                rectangle: (self.x, self.y, self.width, self.height)
+                                width: 5
+
+                    SpinnerDropdown:
+                        size_hint_y: 0.3
+                        id: spinner_agenda_concluir_venda_pagamento
+                        background_color: 0, 0, 0, 0
+                        font_size: 70
+                        color: 0, 0, 0, 1
+                        text: "•Forma de pagamento"
+                        values: ["Pix", "Dinheiro físico", "Cartão de crédito", "Cartão de débito"]
+                BoxLayout:
+                    size_hint_y: 0.1
+                    Label:
+                        text: "Subtrair do estoque: "
+                        color: 0, 0, 0, 1
+                        bold: True
+                        font_size: 50
+                        halign: "right"
+                    
+                    CheckBox:
+                        id: checkbox_agenda_concluir
+                        active: True
+                        canvas.before:
+                            Color:
+                                rgb: 0,0,0
+                            Rectangle:
+                                pos:self.center_x-8, self.center_y-8
+                                size:[16,16]
+                            Color:
+                                rgb: 1, 1, 1
+                            Rectangle:
+                                pos:self.center_x-6, self.center_y-6
+                                size:[12,12]
+
+                BoxLayout:
+                    size_hint_y: 0.15
+                    Botao:
+                        text: "Voltar"
+                        on_release: 
+                            gerenciador_agenda.current = "principal"
+                            gerenciador_agenda.transition.direction = "up"
+                    
+                    Botao:
+                        text: "Concluir"
+                        on_release: 
+                            if spinner_agenda_concluir_venda_pagamento.text != "•Forma de pagamento": agenda_scroll.adicionar_historico(spinner_agenda_concluir_venda_pagamento.text, preco_subproduto_compromisso_saber_mais.text, preco_subproduto_compromisso_saber_mais.hint_text, checkbox_agenda_concluir.active)
+                            if spinner_agenda_concluir_venda_pagamento.text != "•Forma de pagamento": gerenciador_agenda.current = "principal"
+                            gerenciador_agenda.transition.direction = "up"
+
+<Caixa_agenda>:
+    size_hint_y: None
+    height: 250
+    orientation: "vertical"
+    canvas.before:
+        Color:
+            rgba: (1, 74 / 255, 167 / 255, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [30,]
+    BoxLayout:
+        BoxLayout:
+            padding: 10
+            size_hint_x: 0.2
+            AsyncImage:
+                id: imagem_agenda_caixa
+                source: "imagens/logo.png"
+                allow_stretch: True
+
+        Button:
+            background_color: 0, 0, 0, 0
+            id: caixinha_conteudo_agenda
+            orientation: "vertical"
+            size_hint_x: 0.6
+            on_release: 
+                app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.gerenciador_agenda.current = "concluir"
+                app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.gerenciador_agenda.transition.direction = "down"
+
+                app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.agenda_scroll.mais_informacoes_agenda = self.parent.parent.id_entrega
+                app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.imagem_compromisso_saber_mais.source = app.conteudo["subprodutos_estoque"][app.conteudo["agenda"][self.parent.parent.id_entrega - 1]["id_subproduto"] - 1]["imagem"]
+                app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.data_compromisso_saber_mais.text = self.parent.parent.dia + "/" + self.parent.parent.mes + "/" + self.parent.parent.ano
+                app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.nome_e_quantidade_subproduto_compromisso_saber_mais.text = nome_e_quantidade_subproduto_agenda_caixa.text
+                app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.preco_subproduto_compromisso_saber_mais.hint_text = "Preço: " + preco_total_agenda_caixa.text[2:]
+
+            text: data_agenda_caixa.text + "\n" + nome_e_quantidade_subproduto_agenda_caixa.text + "\n" + preco_total_agenda_caixa.text
+            font_size: 45
+            bold: True
+            halign: "center"
+            BoxLayout:
+                Label:
+                    id: data_agenda_caixa
+                    
+                    text: ""
+                    font_size: self.parent.height * .2
+                    bold: True
+
+                Label:
+                    id: nome_e_quantidade_subproduto_agenda_caixa
+                    
+                    text: ""
+                    font_size: self.parent.height * .2
+                    bold: True
+                
+                Label:
+                    id: preco_total_agenda_caixa
+                    
+                    text: ""
+                    font_size: self.parent.height * .2
+                    bold: True
+
+        BoxLayout:
+            id: editar_agenda_caixa
+            size_hint_x: 0.2
+            Image:
+                source: "imagens/edit.png"
+                
+                Button:
+                    on_release: 
+                        app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.spinner_agenda_editar_subproduto.text = self.parent.parent.parent.parent.nome_subproduto
+                        app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.quantidade_subproduto_agenda_editar.text = self.parent.parent.parent.parent.quantidade
+                        app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.dia_agenda_editar_subproduto.text = self.parent.parent.parent.parent.dia
+                        app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.mes_agenda_editar_subproduto.text = self.parent.parent.parent.parent.mes
+                        app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.ano_agenda_editar_subproduto.text = self.parent.parent.parent.parent.ano
+                        app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.descricao_agenda_editar.text = self.parent.parent.parent.parent.descricao
+
+                        app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.agenda_scroll.editando_agenda = self.parent.parent.parent.parent.id_entrega
+                        app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.gerenciador_agenda.current = "editar"
+                        app.root.ids.gerenciador_telas_principal.get_screen("agenda").ids.gerenciador_agenda.transition.direction = "down"
+                    pos: self.parent.pos
+                    background_color: 0, 0, 0, 0
+                    size: self.parent.size
+#

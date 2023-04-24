@@ -2,6 +2,7 @@ from kivy.uix.boxlayout import BoxLayout
 from save_and_load import *
 from kivy.uix.label import Label
 from kivy.app import App
+import datetime
 
 
 class Feiras_scroll(BoxLayout):
@@ -10,6 +11,7 @@ class Feiras_scroll(BoxLayout):
         self.editar_feiras = 0
         self.finalizar_feiras = 0
         self.adicionando_produto = 0
+        self.anos = [str(datetime.date.today().year), str(datetime.date.today().year + 1), str(datetime.date.today().year + 2)]
         self.conteudo = App.get_running_app().conteudo
         self.atualizar()
 

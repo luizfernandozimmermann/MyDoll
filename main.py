@@ -30,7 +30,7 @@ Window.keyboard_anim_args = {'d': .2, 't': 'in_out_expo'}
 Window.softinput_mode = "below_target"
 
 from kivy.lang.builder import Builder
-Builder.load_file('MyDoll.kv')
+Builder.load_file('main.kv')
 
 conexao_sql = carregar("sqlconector")
 host = conexao_sql["host"]
@@ -71,15 +71,15 @@ class Geral(BoxLayout):
         self.sql = False
     
     def resetar_screenmanagers(self):
-        self.ids.gerenciador_colecoes.current = "mostrar colecoes"
-        self.ids.gerenciador_produtos.current = "mostrar produtos"
-        self.ids.gerenciador_subprodutos.current = "mostrar subprodutos"
-        self.ids.gerenciador_feiras.current = "scroll_feiras_principal"
-        self.ids.gerenciador_concluir_feira.current = "concluir feira principal"
-        self.ids.gerenciador_agenda.current = "principal"
-        self.ids.gerenciador_historico.current = "historico_vendas"
-        self.ids.gerenciador_financas.current = "financas atual"
-        self.ids.gerenciador_financas_atual.current = "financas atual principal"
+        self.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_colecoes.current = "mostrar colecoes"
+        self.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_produtos.current = "mostrar produtos"
+        self.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_subprodutos.current = "mostrar subprodutos"
+        self.ids.gerenciador_telas_principal.get_screen("feiras").ids.gerenciador_feiras.current = "scroll_feiras_principal"
+        self.ids.gerenciador_telas_principal.get_screen("feiras").ids.gerenciador_concluir_feira.current = "concluir feira principal"
+        self.ids.gerenciador_telas_principal.get_screen("agenda").ids.gerenciador_agenda.current = "principal"
+        self.ids.gerenciador_telas_principal.get_screen("historico").ids.gerenciador_historico.current = "historico_vendas"
+        self.ids.gerenciador_telas_principal.get_screen("financas").ids.gerenciador_financas.current = "financas atual"
+        self.ids.gerenciador_telas_principal.get_screen("financas").ids.gerenciador_financas_atual.current = "financas atual principal"
 
     def copiar_imagem(self, widget="", source=""):
         App.get_running_app().copiar_imagem(widget=widget, source=source)
@@ -557,20 +557,19 @@ class Geral(BoxLayout):
                 self.ids.gerenciador_telas_principal.transition.direction = "up"
 
             elif self.ids.gerenciador_telas_principal.current == "estoque":
-                # TODO: animação de troca de tela do estoque
-                if self.ids.gerenciador_colecoes.current != "mostrar colecoes":
-                    if self.ids.gerenciador_produtos.current != "mostrar produtos":
-                        if self.ids.gerenciador_subprodutos.current != "mostrar subprodutos":
-                            self.ids.gerenciador_subprodutos.transition.direction = "up"
-                            self.ids.gerenciador_subprodutos.current = "mostrar subprodutos"
+                if self.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_colecoes.current != "mostrar colecoes":
+                    if self.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_produtos.current != "mostrar produtos":
+                        if self.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_subprodutos.current != "mostrar subprodutos":
+                            self.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_subprodutos.transition.direction = "up"
+                            self.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_subprodutos.current = "mostrar subprodutos"
                             return True
                         else:
-                            self.ids.gerenciador_produtos.current = "mostrar produtos"
-                            self.ids.gerenciador_produtos.transition.direction = "up"
+                            self.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_produtos.current = "mostrar produtos"
+                            self.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_produtos.transition.direction = "up"
                             return True
                     else:
-                        self.ids.gerenciador_colecoes.current = "mostrar colecoes"
-                        self.ids.gerenciador_colecoes.transition.direction = "up"
+                        self.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_colecoes.current = "mostrar colecoes"
+                        self.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_colecoes.transition.direction = "up"
                         return True
                 else:
                     self.ids.gerenciador_telas_principal.current = "menu"
@@ -578,19 +577,19 @@ class Geral(BoxLayout):
                     return True
                         
             elif self.ids.gerenciador_telas_principal.current == "feiras":
-                if self.ids.gerenciador_feiras.current == "concluir feira":
-                    if self.ids.gerenciador_concluir_feira.current == "concluir feira principal":
-                        self.ids.gerenciador_feiras.current = "scroll_feiras_principal"
-                        self.ids.gerenciador_feiras.transition.direction = "up"
+                if self.ids.gerenciador_telas_principal.get_screen("feiras").ids.gerenciador_feiras.current == "concluir feira":
+                    if self.ids.gerenciador_telas_principal.get_screen("feiras").ids.gerenciador_concluir_feira.current == "concluir feira principal":
+                        self.ids.gerenciador_telas_principal.get_screen("feiras").ids.gerenciador_feiras.current = "scroll_feiras_principal"
+                        self.ids.gerenciador_telas_principal.get_screen("feiras").ids.gerenciador_feiras.transition.direction = "up"
                         return True
                     else:
-                        self.ids.gerenciador_concluir_feira.current = "concluir feira principal"
-                        self.ids.gerenciador_concluir_feira.transition.direction = "right"
+                        self.ids.gerenciador_telas_principal.get_screen("feiras").ids.gerenciador_concluir_feira.current = "concluir feira principal"
+                        self.ids.gerenciador_telas_principal.get_screen("feiras").ids.gerenciador_concluir_feira.transition.direction = "right"
                         return True
                 
-                elif self.ids.gerenciador_feiras.current != "scroll_feiras_principal":
-                    self.ids.gerenciador_feiras.current = "scroll_feiras_principal"
-                    self.ids.gerenciador_feiras.transition.direction = "up"
+                elif self.ids.gerenciador_telas_principal.get_screen("feiras").ids.gerenciador_feiras.current != "scroll_feiras_principal":
+                    self.ids.gerenciador_telas_principal.get_screen("feiras").ids.gerenciador_feiras.current = "scroll_feiras_principal"
+                    self.ids.gerenciador_telas_principal.get_screen("feiras").ids.gerenciador_feiras.transition.direction = "up"
                     return True
                 
                 else:
@@ -599,9 +598,9 @@ class Geral(BoxLayout):
                     return True
             
             elif self.ids.gerenciador_telas_principal.current == "agenda":
-                if self.ids.gerenciador_agenda.current != "agenda_box":
-                    self.ids.gerenciador_agenda.current = "agenda_box"
-                    self.ids.gerenciador_agenda.transition.direction = "up"
+                if self.ids.gerenciador_telas_principal.get_screen("agenda").ids.gerenciador_agenda.current != "principal":
+                    self.ids.gerenciador_telas_principal.get_screen("agenda").ids.gerenciador_agenda.current = "principal"
+                    self.ids.gerenciador_telas_principal.get_screen("agenda").ids.gerenciador_agenda.transition.direction = "up"
                     return True
                 
                 else:
@@ -610,12 +609,12 @@ class Geral(BoxLayout):
                     return True
             
             elif self.ids.gerenciador_telas_principal.current == "historico":
-                if self.ids.gerenciador_historico.current != "historico_vendas":
-                    self.ids.gerenciador_historico.current = "historico_vendas"
-                    self.ids.gerenciador_historico.transition.direction = "right"
-                    self.ids.gerenciador_historico.current = "historico_vendas"
-                    self.ids.botao_produtos_historico.parent.background_color = 1, 36/255, 148/255, 1
-                    self.ids.botao_feiras_historico.parent.background_color = 0, 0, 0, 0.1
+                if self.ids.gerenciador_telas_principal.get_screen("historico").ids.gerenciador_historico.current != "historico_vendas":
+                    self.ids.gerenciador_telas_principal.get_screen("historico").ids.gerenciador_historico.current = "historico_vendas"
+                    self.ids.gerenciador_telas_principal.get_screen("historico").ids.gerenciador_historico.transition.direction = "right"
+                    self.ids.gerenciador_telas_principal.get_screen("historico").ids.gerenciador_historico.current = "historico_vendas"
+                    self.ids.gerenciador_telas_principal.get_screen("historico").ids.botao_produtos_historico.parent.background_color = 1, 36/255, 148/255, 1
+                    self.ids.gerenciador_telas_principal.get_screen("historico").ids.botao_feiras_historico.parent.background_color = 0, 0, 0, 0.1
                     return True
                 
                 else:
@@ -624,10 +623,10 @@ class Geral(BoxLayout):
                     return True
             
             elif self.ids.gerenciador_telas_principal.current == "financas":
-                if self.ids.gerenciador_financas.current == "financas atual":
-                    if self.ids.gerenciador_financas_atual.current !="financas atual principal":
-                        self.ids.gerenciador_financas_atual.current = "financas atual principal"
-                        self.ids.gerenciador_financas_atual.transition.direction = "up"
+                if self.ids.gerenciador_telas_principal.get_screen("financas").ids.gerenciador_financas.current == "financas atual":
+                    if self.ids.gerenciador_telas_principal.get_screen("financas").ids.gerenciador_financas_atual.current !="financas atual principal":
+                        self.ids.gerenciador_telas_principal.get_screen("financas").ids.gerenciador_financas_atual.current = "financas atual principal"
+                        self.ids.gerenciador_telas_principal.get_screen("financas").ids.gerenciador_financas_atual.transition.direction = "up"
                         return True
 
                     else:
@@ -635,11 +634,11 @@ class Geral(BoxLayout):
                         self.ids.gerenciador_telas_principal.transition.direction = "right"
                         return True
                 
-                elif self.ids.gerenciador_financas.current != "financas atual":
-                    self.ids.gerenciador_financas.transition.direction = "right"
-                    self.ids.gerenciador_financas.current = "financas atual"
-                    self.ids.botao_financas.parent.background_color = 1, 36/255, 148/255, 1
-                    self.ids.botao_financas_historico.parent.background_color = 0, 0, 0, 0.1
+                elif self.ids.gerenciador_telas_principal.get_screen("financas").ids.gerenciador_financas.current != "financas atual":
+                    self.ids.gerenciador_telas_principal.get_screen("financas").ids.gerenciador_financas.transition.direction = "right"
+                    self.ids.gerenciador_telas_principal.get_screen("financas").ids.gerenciador_financas.current = "financas atual"
+                    self.ids.gerenciador_telas_principal.get_screen("financas").ids.botao_financas.parent.background_color = 1, 36/255, 148/255, 1
+                    self.ids.gerenciador_telas_principal.get_screen("financas").ids.botao_financas_historico.parent.background_color = 0, 0, 0, 0.1
                     return True
                 
                 else:
@@ -667,8 +666,8 @@ class Geral(BoxLayout):
     
     def adicionar_imagens_adicionais_subprodutos(self, selecao):
         if selecao:
-            self.ids.scroll_imagens_subprodutos.adicionar(selecao[0])
-            self.ids.scroll_imagens_subprodutos.atualizar()
+            self.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_imagens_subprodutos.adicionar(selecao[0])
+            self.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_imagens_subprodutos.atualizar()
     
     def adicionar_produtos_imagem(self, selecao):
         if selecao:

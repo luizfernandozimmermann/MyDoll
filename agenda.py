@@ -13,6 +13,29 @@ class Agenda_scroll(BoxLayout):
         self.conteudo = App.get_running_app().conteudo
         self.anos = [str(datetime.date.today().year), str(datetime.date.today().year + 1), str(datetime.date.today().year + 2)]
         self.atualizar()
+
+    def procurar_produtos(self, colecao_nome):
+        self.conteudo = App.get_running_app().conteudo
+        id = 0
+        for colecao in self.conteudo["colecoes_estoque"]:
+            if colecao["colecao"] == colecao_nome and colecao["ativo"] == 1:
+                id = colecao["id"]
+
+        produtos = []
+        for produto in self.conteudo["produtos_estoque"]:
+            if produto["ativo"] == 1 and produto["id_colecao"] == id:
+                produtos.append(produto["produto"])
+
+        return produtos
+    
+    def colecoes(self):
+        self.conteudo = App.get_running_app().conteudo
+        colecoes = []
+        for colecao in self.conteudo["colecoes_estoque"]:
+            if colecao["ativo"] == 1:
+                colecoes.append(colecao["colecao"])
+
+        return colecoes
     
     def adicionar_historico(self, forma_pagamento, preco, preco_hint, checkbox_ativo):
         self.conteudo = App.get_running_app().conteudo

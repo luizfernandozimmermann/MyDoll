@@ -1,0 +1,317 @@
+<Tela_historico@Screen>:
+    name: "historico"
+    on_pre_enter:
+        historico_scroll.atualizar()
+        historico_feiras_scroll.atualizar()
+    BoxLayout:
+        orientation: "vertical"
+        spacing: 5
+        BoxLayout:
+            size_hint_y: 0.15
+            padding: 30
+            spacing: 30
+            BoxLayout:
+                background_color: 1, 36/255, 148/255, 1
+                canvas:
+                    Color:
+                        rgba: self.background_color
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                Button:
+                    id: botao_produtos_historico
+                    background_color: 0, 0, 0, 0
+                    on_release:
+                        gerenciador_historico.transition.direction = "right"
+                        gerenciador_historico.current = "historico_vendas"
+                        self.parent.background_color = 1, 36/255, 148/255, 1
+                        botao_feiras_historico.parent.background_color = 0, 0, 0, 0.1
+                    size_hint_x: None
+                    size_hint_y: None
+                    height: self.parent.height
+                    width: self.parent.width
+                    Image:
+                        id: imagem_produtos_historico
+                        source: "imagens/logo.png"
+                        allow_stretch: True
+                        size_hint_y: None
+                        size_hint_x: None
+                        size: self.parent.height, self.parent.height
+                        center: self.parent.center
+                    
+            BoxLayout:
+                background_color: 0, 0, 0, 0.1
+                canvas:
+                    Color:
+                        rgba: self.background_color
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                Button:
+                    id: botao_feiras_historico
+                    background_color: 0, 0, 0, 0
+                    on_release: 
+                        gerenciador_historico.transition.direction = "left"
+                        gerenciador_historico.current = "historico_feiras"
+                        botao_produtos_historico.parent.background_color = 0, 0, 0, 0.1
+                        self.parent.background_color = 1, 36/255, 148/255, 1
+                    size_hint_x: None
+                    size_hint_y: None
+                    height: self.parent.height
+                    width: self.parent.width
+                    Image:
+                        id: imagem_feiras_historico
+                        source: "imagens/feiras.png"
+                        allow_stretch: True
+                        size_hint_y: None
+                        size_hint_x: None
+                        size: self.parent.height - 10, self.parent.height -10
+                        center: self.parent.center
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint_y: 0.1
+            height: 50
+            spacing: 20
+            padding: 10
+            Label:
+                text: "Filtrar por:"
+                color: 0, 0, 0, 1
+                font_size: 60
+                
+            SpinnerDropdown:
+                id: filtro_mes_historico
+                text: "Mês: Todos"
+                background_color: 0, 0, 0, 0
+                font_size: 60
+                color: 0, 0, 0, 1
+                on_text: 
+                    historico_scroll.filtro_atualizar(self.text[5:], filtro_ano_historico.text[5:])
+                    historico_feiras_scroll.filtro_atualizar(self.text[5:], filtro_ano_historico.text[5:])
+                values: historico_scroll.meses_filtro()
+
+            SpinnerDropdown:
+                id: filtro_ano_historico
+                text: "Ano: Todos"
+                values: historico_scroll.anos_filtro()
+                font_size: 60
+                background_color: 0, 0, 0, 0
+                color: 0, 0, 0, 1
+                on_text: 
+                    historico_scroll.filtro_atualizar(filtro_mes_historico.text[5:], self.text[5:])
+                    historico_feiras_scroll.filtro_atualizar(filtro_mes_historico.text[5:], self.text[5:])
+                            
+                    
+        BoxLayout:
+            size_hint_y: 0.75
+            ScreenManager:
+                id: gerenciador_historico
+                Screen:
+                    name: "historico_vendas"
+                    ScrollView:
+                        bar_color: 0, 0, 0, 0
+                        Historico_scroll:
+                            id: historico_scroll
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: self.minimum_height
+                            padding: 30
+                            spacing: 30
+
+                Screen:
+                    name: "historico_feiras"
+                    ScrollView:
+                        bar_color: 0, 0, 0, 0
+                        Historico_scroll_feiras:
+                            id: historico_feiras_scroll
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: self.minimum_height
+                            padding: 30
+                            spacing: 30
+
+<Caixa_historico>:
+    size_hint_y: None
+    height: 250
+    orientation: "vertical"
+    canvas.before:
+        Color:
+            rgba: (1, 74 / 255, 167 / 255, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [30,]
+    
+    BoxLayout:
+        BoxLayout:
+            padding: 10
+            size_hint_x: 0.2
+            AsyncImage:
+                id: imagem_historico_caixa
+                source: "imagens/logo.png"
+                allow_stretch: True
+                size: self.parent.size
+
+        BoxLayout:
+            background_color: 0, 0, 0, 0
+            id: caixinha_conteudo_historico
+            orientation: "vertical"
+            size_hint_x: 0.6
+            Label:
+                id: data_historico_caixa
+                text: ""
+                font_size: 60
+                
+                bold: True
+
+            Label:
+                id: nome_e_quantidade_subproduto_historico_caixa
+                text: ""
+                font_size: 60
+                
+                bold: True
+            
+            Label:
+                id: preco_total_historico_caixa
+                text: ""
+                font_size: 60
+                
+                bold: True
+            
+            Label:
+                id: metodo_de_pagamento
+                
+                text: ""
+                font_size: 60
+                bold: True
+
+        BoxLayout:
+            size_hint_x: 0.2
+
+<Caixa_historico_feira>:
+    size_hint_y: None
+    height: 300
+    orientation: "vertical"
+    canvas.before:
+        Color:
+            rgba: (1, 74 / 255, 167 / 255, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [30,]
+    BoxLayout:
+        BoxLayout:
+            padding: 10
+            size_hint_x: 0.2
+            AsyncImage:
+                id: imagem_agenda_caixa
+                source: "imagens/feiras.png"
+                allow_stretch: True
+
+        BoxLayout:
+            id: caixa_historico_feira_textos
+            orientation: "vertical"
+            size_hint_x: 0.6
+            Label:
+                id: nome_feira_historico
+                
+                text: ""
+                font_size: 60
+                bold: True
+
+            Label:
+                id: local_feira_historico
+                
+                text: ""
+                font_size: 60
+                bold: True
+            
+            Label:
+                id: data_feira_historico
+                
+                text: ""
+                font_size: 60
+                bold: True
+            
+            Label:
+                id: horarios_feira_historico
+                
+                text: ""
+                font_size: 60
+                bold: True
+            
+            Label:
+                id: preco_feiras_total_historico
+                
+                text: ""
+                font_size: 60
+                bold: True
+
+        BoxLayout:
+            size_hint_x: 0.2
+
+<Produto_feiras_historico>:
+    size_hint_y: None
+    height: 250
+
+    BoxLayout:
+        size_hint_x: 0.1
+
+    BoxLayout:
+        size_hint_x: 0.8
+        orientation: "vertical"
+        canvas.before:
+            Color:
+                rgba: (1, 74 / 255, 167 / 255, 1)
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [30,]
+        BoxLayout:
+            BoxLayout:
+                padding: 10
+                size_hint_x: 0.2
+                AsyncImage:
+                    id: imagem_feiras_produto_historico
+                    source: "imagens/logo.png"
+                    allow_stretch: True
+
+            BoxLayout:
+                size_hint_x: 0.6
+                id: caixa_historico_feira_textos
+                orientation: "vertical"
+                Label:
+                    id: feiras_nome_subproduto_historico
+                    
+                    text: ""
+                    font_size: 60
+                    bold: True
+
+                Label:
+                    id: feiras_quantidade_produto_historico
+                    
+                    text: ""
+                    font_size: 60
+                    bold: True
+                
+                Label:
+                    id: preco_total_feira_historico
+                    
+                    text: ""
+                    font_size: 60
+                    bold: True
+                
+                Label:
+                    id: metodo_de_pagamento_historico_feira_produto
+                    
+                    text: ""
+                    font_size: 60
+                    bold: True
+
+            Button:
+                size_hint_x: 0.2
+                background_color: 0, 0, 0, 0
+    
+    BoxLayout:
+        size_hint_x: 0.1
+#

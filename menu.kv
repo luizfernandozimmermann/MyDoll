@@ -1,0 +1,162 @@
+<Tela_menu@Screen>:
+    name: "menu"
+    on_pre_enter: 
+        menu_proximas_entregas.atualizar()
+        menu_proximas_feiras.atualizar()
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 20
+        padding: 30
+        Image:
+            source: "imagens/vida_de_boneca.png"
+            Button:
+                background_color: 0, 0, 0, 0
+                pos: self.parent.pos
+                size: self.parent.size
+                on_release: app.root.janela_admin()
+
+        BoxLayout:
+            orientation: 'vertical'
+            canvas.before:
+                Color:
+                    rgba: 1, 97/255, 178/255, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [50,]
+            Label:
+                size_hint_y: 0.15
+                text: "Próximas entregas"
+                halign: "left"
+                font_size: 50
+                bold: True
+
+            ScrollView:
+                bar_color: 0, 0, 0, 0
+                Menu_proximas_entregas:
+                    id: menu_proximas_entregas
+                    spacing: 30
+                    padding: 30
+                    size_hint_x: None
+                    width: self.minimum_width
+
+        BoxLayout:
+            orientation: 'vertical'
+            canvas.before:
+                Color:
+                    rgba: 1, 97/255, 178/255, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [50,]
+            Label:
+                size_hint_y: 0.15
+                text: "Próximas feiras"
+                halign: "left"
+                font_size: 50
+                bold: True
+
+            ScrollView:
+                bar_color: 0, 0, 0, 0
+                Menu_proximas_feiras:
+                    id: menu_proximas_feiras
+                    spacing: 30
+                    padding: 30
+                    size_hint_x: None
+                    width: self.minimum_width
+
+
+<Caixa_menu_entregas>:
+    orientation: "vertical"
+    size_hint_x: None
+    width: 600
+    height: 450
+    canvas.before:
+        Color:
+            rgba: (1, 64 / 255, 157 / 255, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [30,]
+    BoxLayout:
+        size_hint_y: 0.7
+        BoxLayout:
+            size_hint_x: 0.6
+            padding: 10
+            AsyncImage:
+                id: imagem_compromisso_menu
+                source: "imagens/logo.png"
+                allow_stretch: True
+                center: self.parent.center
+        
+        BoxLayout:
+            orientation: "vertical"
+            Label:
+                id: data_compromisso_menu
+                bold: True
+                halign: "center"
+
+            Label:
+                bold: True
+                id: nome_e_quantidade_subproduto_compromisso_menu
+                text_size: self.parent.width, None
+                line_height: 0.8
+                halign: "center"
+                
+
+            Label:
+                bold: True
+                id: preco_subproduto_compromisso_menu
+                halign: "center"
+
+<Caixa_menu_feiras>:
+    orientation: "vertical"
+    size_hint_x: None
+    width: 700
+    height: 450
+    canvas.before:
+        Color:
+            rgba: (1, 64 / 255, 157 / 255, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [30,]
+    BoxLayout:
+        size_hint_y: 0.7
+        BoxLayout:
+            size_hint_x: 0.6
+            padding: 10
+            AsyncImage:
+                source: "imagens/feiras.png"
+                allow_stretch: True
+                center: self.parent.center
+        
+        BoxLayout:
+            orientation: "vertical"
+            Label:
+                id: nome_feira_menu
+                text_size: self.parent.width, None
+                bold: True
+                halign: "center"
+                
+
+            Label:
+                bold: True
+                id: local_feira_menu
+                text_size: self.parent.width, None
+                halign: "center"
+                
+
+            Label:
+                bold: True
+                id: data_feira_menu
+                halign: "center"
+                
+            
+    Label:
+        size_hint_y: 0.2
+        bold: True
+        id: horarios_feira_menu
+        halign: "center"
+
+#
