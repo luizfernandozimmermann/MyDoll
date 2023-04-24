@@ -5,12 +5,12 @@ from kivy.uix.spinner import Spinner, SpinnerOption
 from kivy.uix.popup import Popup
 
 from save_and_load import *
-from menu import *
-from agenda import *
-from estoque import *
-from historico import *
-from feiras import *
-from financas import *
+from menu.menu import *
+from agenda.agenda import *
+from estoque.estoque import *
+from historico.historico import *
+from feiras.feiras import *
+from financas.financas import *
 
 from kivy.core.clipboard import Clipboard
 from kivy.core.window import Window
@@ -19,11 +19,11 @@ from mysql.connector import connect
 from PIL import Image
 import os
 
-from android.storage import primary_external_storage_path
+"""from android.storage import primary_external_storage_path
 from android.permissions import request_permissions, Permission
 request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE, Permission.INTERNET])
 external_storage_path = primary_external_storage_path()
-gallery_path = external_storage_path + '/DCIM'
+gallery_path = external_storage_path + '/DCIM'"""
 
 
 Window.keyboard_anim_args = {'d': .2, 't': 'in_out_expo'}
