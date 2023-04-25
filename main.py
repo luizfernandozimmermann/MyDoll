@@ -18,12 +18,13 @@ from plyer import filechooser
 from mysql.connector import connect
 from PIL import Image
 import os
+import pyowm
 
-from android.storage import primary_external_storage_path
+"""from android.storage import primary_external_storage_path
 from android.permissions import request_permissions, Permission
 request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE, Permission.INTERNET])
 external_storage_path = primary_external_storage_path()
-gallery_path = external_storage_path + '/DCIM'
+gallery_path = external_storage_path + '/DCIM'"""
 
 Window.keyboard_anim_args = {'d': .2, 't': 'in_out_expo'}
 Window.softinput_mode = "below_target"
@@ -37,6 +38,31 @@ user = conexao_sql["user"]
 passwd = conexao_sql["passwd"]
 port = conexao_sql["port"]
 database = conexao_sql["database"]
+
+
+# previsão do tempo
+
+previsoes_data = carregar("previsao_tempo")
+previsoes = {}
+cidade = previsoes_data["cidade"]
+chave = previsoes_data["chave"]
+
+owm = pyowm.OWM(chave)
+
+gerenciador_clima = owm.weather_manager()
+
+observacao = gerenciador_clima.weather_at_place(cidade)
+
+previsao_tempo = gerenciador_clima.forecast_at_place(cidade, '3h')
+
+for clima in previsao_tempo.forecast:
+    data = clima.reference_time('date').strftime('%Y-%m-%d')
+    hora = clima.reference_time('date').hour
+    prob_chuva = clima.rain.get('3h')
+    if prob_chuva != None:
+        if data not in previsoes or hora < 18:
+            previsoes[data] = round(prob_chuva)
+
 
 class SpinnerOptions(SpinnerOption):
     def __init__(self, **kwargs):
@@ -670,30 +696,45 @@ class Geral(BoxLayout):
     
     def adicionar_produtos_imagem(self, selecao):
         if selecao:
-            self.ids.adicionar_produto_imagem.source = selecao[0]
+            self.ids.gerenciador_telas_principal.get_screen("estoque").ids.adicionar_produto_imagem.source = selecao[0]
 
     def editar_produtos_imagem(self, selecao):
         if selecao:
-            self.ids.editar_produto_imagem.source = selecao[0]
+            self.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_produto_imagem.source = selecao[0]
 
     def adicionar_subprodutos_imagem(self, selecao):
         if selecao:
-            self.ids.adicionar_subproduto_imagem.source = selecao[0]
+            self.ids.gerenciador_telas_principal.get_screen("estoque").ids.adicionar_subproduto_imagem.source = selecao[0]
 
     def editar_subprodutos_imagem(self, selecao):
         if selecao:
-            self.ids.editar_subproduto_imagem.source = selecao[0]
+            self.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_subproduto_imagem.source = selecao[0]
 
 
 class MyApp(App):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.previsoes_tempo = previsoes
         self.conteudo = carregar()
         self.width = Window.size[0]
         self.center_x = Window.center[0]
         self.popup = Popup(title='Imagens copiadas!', title_align="center", title_size=70,
                            separator_color=[0, 0, 0, 0],
     size_hint=(None, None), size=(700, 170), separator_height=0)
+        
+    def ajustar_fonte(self, tamanho_fonte, largura, texto):
+        label = Label(font_size=tamanho_fonte, width=largura, text=texto)
+        label.texture_update()
+        largura, altura = label.texture_size
+
+        while largura > label.width or altura > label.height:
+            label.font_size -= 2
+            label.texture_update()
+            largura, altura = label.texture_size
+
+        label.font_size -= 1
+        return label.font_size
+        
     
     def mostrar_popup(self):
         self.popup.open()

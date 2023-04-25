@@ -81,9 +81,11 @@ class Historico_scroll(BoxLayout):
         self.ordem = sorted(self.conteudo["historico_agenda"], key=lambda d: d['data_entrega']) 
         for venda in self.ordem:
             subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
+            produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+            colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
             self.add_widget(Caixa_historico(
                 data= venda["data_entrega"],
-                nome= subproduto["subproduto"],
+                nome= colecao["colecao"] + " " + produto["produto"] + " " + subproduto["subproduto"],
                 quantidade= venda["quantidade"],
                 preco= venda["preco_total"],
                 imagem= subproduto["imagem"],
@@ -106,9 +108,11 @@ class Historico_scroll(BoxLayout):
                 for venda in self.ordem:
                     if venda["data_entrega"][:4] == ano:
                         subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
+                        produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+                        colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
                         self.add_widget(Caixa_historico(
                             data= venda["data_entrega"],
-                            nome= subproduto["subproduto"],
+                            nome= colecao["colecao"] + " " + produto["produto"] + " " + subproduto["subproduto"],
                             quantidade= venda["quantidade"],
                             preco= venda["preco_total"],
                             imagem= subproduto["imagem"],
@@ -120,9 +124,11 @@ class Historico_scroll(BoxLayout):
                 for venda in self.ordem:
                     if venda["data_entrega"][5:7] == mes:
                         subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
+                        produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+                        colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
                         self.add_widget(Caixa_historico(
                             data= venda["data_entrega"],
-                            nome= subproduto["subproduto"],
+                            nome= colecao["colecao"] + " " + produto["produto"] + " " + subproduto["subproduto"],
                             quantidade= venda["quantidade"],
                             preco= venda["preco_total"],
                             imagem= subproduto["imagem"],
@@ -133,9 +139,11 @@ class Historico_scroll(BoxLayout):
                 for venda in self.ordem:
                     if venda["data_entrega"][8:] == mes and venda["data_entrega"][:4] == ano:
                         subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
+                        produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+                        colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
                         self.add_widget(Caixa_historico(
                             data= venda["data_entrega"],
-                            nome= subproduto["subproduto"],
+                            nome= colecao["colecao"] + " " + produto["produto"] + " " + subproduto["subproduto"],
                             quantidade= venda["quantidade"],
                             preco= venda["preco_total"],
                             imagem= subproduto["imagem"],
@@ -191,9 +199,11 @@ class Historico_scroll_feiras(BoxLayout):
 
             for venda in vendas_feira:
                 subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
+                produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+                colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
                 self.add_widget(Produto_feiras_historico(
                     imagem= subproduto["imagem"],
-                    nome= subproduto["subproduto"],
+                    nome= colecao["colecao"] + " " + produto["produto"] + " " + subproduto["subproduto"],
                     quantidade= venda["quantidade"],
                     preco= venda["preco_total"],
                     forma_pagamento= venda["forma_pagamento"],
@@ -231,9 +241,11 @@ class Historico_scroll_feiras(BoxLayout):
 
                         for venda in vendas_feira:
                             subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
+                            produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+                            colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
                             self.add_widget(Produto_feiras_historico(
                                 imagem= subproduto["imagem"],
-                                nome= subproduto["subproduto"],
+                                nome= colecao["colecao"] + " " + produto["produto"] + " " + subproduto["subproduto"],
                                 quantidade= venda["quantidade"],
                                 preco= venda["preco_total"],
                                 forma_pagamento= venda["forma_pagamento"],
@@ -261,9 +273,11 @@ class Historico_scroll_feiras(BoxLayout):
 
                         for venda in vendas_feira:
                             subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
+                            produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+                            colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
                             self.add_widget(Produto_feiras_historico(
                                 imagem= subproduto["imagem"],
-                                nome= subproduto["subproduto"],
+                                nome= colecao["colecao"] + " " + produto["produto"] + " " + subproduto["subproduto"],
                                 quantidade= venda["quantidade"],
                                 preco= venda["preco_total"],
                                 forma_pagamento= venda["forma_pagamento"],
@@ -290,9 +304,11 @@ class Historico_scroll_feiras(BoxLayout):
 
                         for venda in vendas_feira:
                             subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
+                            produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+                            colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
                             self.add_widget(Produto_feiras_historico(
                                 imagem= subproduto["imagem"],
-                                nome= subproduto["subproduto"],
+                                nome= colecao["colecao"] + " " + produto["produto"] + " " + subproduto["subproduto"],
                                 quantidade= venda["quantidade"],
                                 preco= venda["preco_total"],
                                 forma_pagamento= venda["forma_pagamento"],

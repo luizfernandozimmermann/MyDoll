@@ -2,6 +2,7 @@ from kivy.uix.boxlayout import BoxLayout
 from save_and_load import *
 from kivy.uix.label import Label
 from kivy.app import App
+from kivy.uix.image import Image
 import datetime
 
 
@@ -100,7 +101,6 @@ class Feiras_scroll(BoxLayout):
         for subproduto in self.conteudo["subprodutos_estoque"]:
             if subproduto["subproduto"] == nome_subproduto and subproduto["id_produto"] == id_produto:
                 id_subproduto = subproduto["id"]
-                print(subproduto)
                 break
         
         dic = {
@@ -163,6 +163,22 @@ class Caixa_feira(BoxLayout):
         self.horario_inicial = horario_inicial
         self.horario_final = horario_final
         self.descricao = descricao
+        previsoes_tempo = App.get_running_app().previsoes_tempo
+
+        if data_feira in previsoes_tempo:
+            self.chance_chuva = previsoes_tempo[data_feira]
+            
+            if self.chance_chuva == 0:
+                imagem = "imagens/sem_chance_chuva.png"
+            elif 30 >= self.chance_chuva:
+                imagem = "imagens/pouca_chance_chuva.png"
+            elif 70 >= self.chance_chuva:
+                imagem = "imagens/media_chance_chuva.png"
+            else:
+                imagem = "imagens/alta_chance_chuva.png"
+
+            self.ids.imagem_chance_chuva.source = imagem
+            self.ids.porcentagem_chance_chuva.text = str(self.chance_chuva) + "%"
 
         self.subprodutos = []
         for subproduto in self.conteudo["subprodutos_feira"]:
@@ -191,6 +207,7 @@ class Caixa_feira(BoxLayout):
             self.ids.botao_feira_concluir.text += f"\n {descricao}"
 
 
+
 class Caixa_subproduto_feira(BoxLayout):
     def __init__(self, id, imagem, nome_subproduto, quantidade, **kwargs):
         super().__init__(**kwargs)
@@ -208,6 +225,23 @@ class Concluir_feira_scroll(BoxLayout):
         self.id_feira = 0
         self.conteudo = App.get_running_app().conteudo
         self.atualizar()
+
+    def preco_subproduto_venda(self, metodo_pagamento, nome_subproduto, quantidade):
+        self.conteudo = App.get_running_app().conteudo
+        if quantidade == "":
+            quantidade = 1
+        quantidade = int(quantidade)
+
+        if nome_subproduto != "•Escolha um subproduto":
+            subproduto = self.conteudo["subprodutos_estoque"][self.ids_subprodutos_levados[nome_subproduto] - 1]
+            produto = self.conteudo["produtos_estoque"][subproduto["id_produto"]]
+            preco = produto["preco"] * quantidade
+            if metodo_pagamento in ["Pix", "Dinheiro físico"]:
+                preco *= .95
+
+            return str(preco)
+        else:
+            return ""
 
     def concluir_feira(self):
         self.conteudo = App.get_running_app().conteudo
@@ -251,17 +285,23 @@ class Concluir_feira_scroll(BoxLayout):
     def excluir_venda_feira(self, id):
         self.conteudo = App.get_running_app().conteudo
 
-        self.conteudo["feiras_vendas"][id - 1]["ativo"] = 0
+        self.conteudo["subprodutos_feira"][id - 1]["ativo"] = 0
         salvar(self.conteudo)
         self.atualizar()
 
     def subprodutos_levados_na_feira(self):
         self.conteudo = App.get_running_app().conteudo
         
+        self.ids_subprodutos_levados = {}
         subprodutos = []
-        for subproduto in self.conteudo["subprodutos_feira"]:
-            if subproduto["ativo"] == 1 and subproduto["id_feira"] == self.id_feira:
-                subprodutos.append(self.conteudo["subprodutos_estoque"][subproduto["id_subproduto"] - 1]["subproduto"])
+        for subproduto_feira in self.conteudo["subprodutos_feira"]:
+            if subproduto_feira["ativo"] == 1 and subproduto_feira["id_feira"] == self.id_feira:
+                subproduto_estoque = self.conteudo["subprodutos_estoque"][subproduto_feira["id_subproduto"] - 1]
+                produto_estoque = self.conteudo["produtos_estoque"][subproduto_estoque["id_produto"] - 1]
+                colecao_estoque = self.conteudo["colecoes_estoque"][produto_estoque["id_colecao"] - 1]
+                nome = colecao_estoque["colecao"] + " " + produto_estoque["produto"] + " " + subproduto_estoque["subproduto"]
+                subprodutos.append(nome)
+                self.ids_subprodutos_levados[nome] = subproduto_feira["id"]
 
         return subprodutos
 
@@ -273,10 +313,12 @@ class Concluir_feira_scroll(BoxLayout):
         for venda in self.conteudo["feiras_vendas"]:
             if venda["ativo"] == 1 and venda["id_feira"] == self.id_feira:
                 subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
+                produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+                colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
                 self.add_widget(Caixa_concluir_feira(
                     id= venda["id"],
                     imagem= subproduto["imagem"],
-                    nome_subproduto= subproduto["subproduto"],
+                    nome_subproduto= colecao["colecao"] + " " + produto["produto"] + " " + subproduto["subproduto"],
                     quantidade= venda["quantidade"],
                     preco= venda["preco"],
                     descricao= venda["descricao"]
@@ -285,10 +327,7 @@ class Concluir_feira_scroll(BoxLayout):
     def adicionar(self, nome_subproduto, quantidade, descricao, preco, forma_pagamento, id_feira):
         self.conteudo = App.get_running_app().conteudo
 
-        for subproduto in self.conteudo["subprodutos_estoque"]:
-            if subproduto["subproduto"] == nome_subproduto:
-                id = subproduto["id"]
-                break
+        id = self.conteudo["subprodutos_feira"][self.ids_subprodutos_levados[nome_subproduto] - 1]["id_subproduto"]
 
         dic = {
             "id": len(self.conteudo["feiras_vendas"]) + 1,
@@ -316,7 +355,7 @@ class Caixa_concluir_feira(BoxLayout):
         self.ids.preco_total_agenda_caixa_concluir.text = 'R$' + '{:,.2f}'.format(preco)
         if descricao != "" and descricao != "Descrição":
             self.height += 80
-            self.ids.caixinha_descricao_concluir.add_widget(Label(text=descricao, bold=True, font_size=60))
+            self.ids.caixinha_descricao_concluir.add_widget(Label(text=descricao, bold=True, font_size=60, text_size=self.size))
 
 
 def converter_data(data):

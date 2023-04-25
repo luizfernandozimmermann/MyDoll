@@ -85,6 +85,7 @@ class Caixa_colecao(Button):
         self.id_colecao = id_colecao
         self.size_hint_y = None
         self.width = self.width
+        self.texture_update()
 
 
 class Scroll_produtos(BoxLayout):
@@ -191,6 +192,7 @@ class Caixa_produto(Button):
         self.size_hint_y = None
         self.width = self.width
         self.ids.imagem_produto.source = imagem
+        self.texture_update()
 
 
 
@@ -296,7 +298,7 @@ class Caixa_subproduto(Button):
         self.size_hint_y = None
         self.width = self.width
         self.ids.imagem_produto.source = imagem
-
+        self.texture_update()
 
 
 class Scroll_imagens_subprodutos(BoxLayout):

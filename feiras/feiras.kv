@@ -131,6 +131,16 @@
 
         Screen:
             name: "adicionar"
+            on_pre_enter:
+                nome_feira_adicionar.text = ""
+                local_feira_adicionar.text = ""
+                descricao_feira_adicionar.text = ""
+                dia_feira_adicionar.text = "•Dia"
+                mes_feira_adicionar.text = "•Mês"
+                ano_feira_adicionar.text = "•Ano"
+                horario_inicial_feira_adicionar.text = "Horário inicial"
+                horario_final_feira_adicionar.text = "Horário final"
+
             BoxLayout:
                 orientation: "vertical"
                 BoxLayout:
@@ -503,10 +513,12 @@
                                     text: "•Escolha um subproduto"
                                     color: 0, 0, 0, 1
                                     values: concluir_feira_scroll.subprodutos_levados_na_feira()
+                                    on_text: preco_subproduto_feira_adicionar_concluir.text = concluir_feira_scroll.preco_subproduto_venda(spinner_feiras_concluir_venda_pagamento.text, self.text, quantidade_subproduto_feira_adicionar_concluir.text)
 
                                 BoxLayout:
                                     TextInput:
                                         id: quantidade_subproduto_feira_adicionar_concluir
+                                        on_text_validate: preco_subproduto_feira_adicionar_concluir.text = concluir_feira_scroll.preco_subproduto_venda(spinner_feiras_concluir_venda_pagamento.text, spinner_feira_adicionar_subproduto_concluir.text, self.text)
                                         input_filter: "float"
                                         hint_text: "Quantidade"
                                         multiline: False
@@ -531,6 +543,7 @@
                                     color: 0, 0, 0, 1
                                     text: "•Método de pagamento"
                                     values: ["Pix", "Dinheiro físico", "Cartão de crédito", "Cartão de débito"]
+                                    on_text: preco_subproduto_feira_adicionar_concluir.text = concluir_feira_scroll.preco_subproduto_venda(self.text, spinner_feira_adicionar_subproduto_concluir.text, quantidade_subproduto_feira_adicionar_concluir.text)
                                 
                                 BoxLayout: 
                                     TextInput:
@@ -585,9 +598,8 @@
                             Botao:
                                 text: "Adicionar"
                                 on_release: 
-                                    gerenciador_concluir_feira.transition.direction = "right"
-                                    if spinner_feira_adicionar_subproduto_concluir.text != "Escolha um subproduto" and quantidade_subproduto_feira_adicionar_concluir.text.isnumeric() and preco_subproduto_feira_adicionar_concluir.text.isnumeric() and spinner_feiras_concluir_venda_pagamento.text != "Escolha o método de pagamento": gerenciador_concluir_feira.current = "concluir feira principal"
-                                    if spinner_feira_adicionar_subproduto_concluir.text != "Escolha um subproduto" and quantidade_subproduto_feira_adicionar_concluir.text.isnumeric() and preco_subproduto_feira_adicionar_concluir.text.isnumeric() and spinner_feiras_concluir_venda_pagamento.text != "Escolha o método de pagamento": concluir_feira_scroll.adicionar(spinner_feira_adicionar_subproduto_concluir.text, quantidade_subproduto_feira_adicionar_concluir.text, descricao_feira_adicionar_concluir.text, preco_subproduto_feira_adicionar_concluir.text, spinner_feiras_concluir_venda_pagamento.text, feiras_scroll.finalizar_feiras)
+                                    if spinner_feira_adicionar_subproduto_concluir.text != "•Escolha um subproduto" and quantidade_subproduto_feira_adicionar_concluir.text.isnumeric() and preco_subproduto_feira_adicionar_concluir.text != "" and spinner_feiras_concluir_venda_pagamento.text != "•Método de pagamento": gerenciador_concluir_feira.current = "concluir feira principal"
+                                    if spinner_feira_adicionar_subproduto_concluir.text != "•Escolha um subproduto" and quantidade_subproduto_feira_adicionar_concluir.text.isnumeric() and preco_subproduto_feira_adicionar_concluir.text != "" and spinner_feiras_concluir_venda_pagamento.text != "•Método de pagamento": concluir_feira_scroll.adicionar(spinner_feira_adicionar_subproduto_concluir.text, quantidade_subproduto_feira_adicionar_concluir.text, descricao_feira_adicionar_concluir.text, preco_subproduto_feira_adicionar_concluir.text, spinner_feiras_concluir_venda_pagamento.text, feiras_scroll.finalizar_feiras)
 
 <Caixa_feira>:
     spacing: 20
@@ -609,9 +621,24 @@
                 radius: [30,]
 
         Image:
+            id: imagem_feira
             size_hint_x: 0.25
             source: "imagens/feiras.png"
-
+            BoxLayout:
+                id: previsao_tempo
+                spacing: 5
+                x: self.parent.x + (self.parent.width - self.width) // 2
+                y: self.parent.y + self.parent.height - porcentagem_chance_chuva.texture_size[1] * 2
+                Image:
+                    id: imagem_chance_chuva
+                    source: "imagens/nada.png"
+                
+                Label:
+                    id: porcentagem_chance_chuva
+                    color: 0, 0, 0, 1
+                    bold: True
+                    font_size: 30
+            
         Botao:
             id: botao_feira_concluir
             bold: True
@@ -701,7 +728,8 @@
         size_hint_x: .58
         halign: "center"
         bold: True
-        font_size: 50
+        font_size: app.ajustar_fonte(50, self.width * .8, self.text)
+        center: self.parent.center
     
     Button:
         size_hint_x: .2
@@ -744,22 +772,25 @@
                 Label:
                     id: feiras_nome_subproduto_concluir
                     text: ""
+                    center_x: self.parent.center_x
                     
-                    font_size: 60
+                    font_size: app.ajustar_fonte(60, self.width * .8, self.text)
                     bold: True
 
                 Label:
                     id: feiras_quantidade_subproduto_concluir
                     
                     text: ""
-                    font_size: 60
+                    center_x: self.parent.center_x
+                    font_size: app.ajustar_fonte(60, self.width * .8, self.text)
                     bold: True
                 
                 Label:
                     id: preco_total_agenda_caixa_concluir
                     
                     text: ""
-                    font_size: 60
+                    center_x: self.parent.center_x
+                    font_size: app.ajustar_fonte(60, self.width * .8, self.text)
                     bold: True
 
             Button:
