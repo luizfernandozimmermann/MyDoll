@@ -37,7 +37,7 @@ version = 2.0
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,pillow,datetime,plyer,mysql_connector
+requirements = python3,kivy,pillow,datetime,plyer,mysql_connector,requests,hostpython3,openssl,urllib3,chardet,certifi,idna
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes

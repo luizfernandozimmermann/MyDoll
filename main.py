@@ -18,7 +18,7 @@ from plyer import filechooser
 from mysql.connector import connect
 from PIL import Image
 import os
-import pyowm
+import requests
 
 """from android.storage import primary_external_storage_path
 from android.permissions import request_permissions, Permission
@@ -47,21 +47,25 @@ previsoes = {}
 cidade = previsoes_data["cidade"]
 chave = previsoes_data["chave"]
 
-owm = pyowm.OWM(chave)
+try:
+    resposta = requests.get(f"http://api.openweathermap.org/data/2.5/forecast?q={cidade}&appid={chave}")
 
-gerenciador_clima = owm.weather_manager()
+    # Analisa a resposta em formato JSON
+    dados = resposta.json()
 
-observacao = gerenciador_clima.weather_at_place(cidade)
+    # Imprime as informações da previsão do tempo para cada período de tempo
+    for clima in dados['list']:
+        data_hora = clima['dt_txt']
+        prob_chuva = clima['pop'] * 100
+        data = data_hora.split()[0]
+        hora = int(data_hora.split()[1][:2])
 
-previsao_tempo = gerenciador_clima.forecast_at_place(cidade, '3h')
-
-for clima in previsao_tempo.forecast:
-    data = clima.reference_time('date').strftime('%Y-%m-%d')
-    hora = clima.reference_time('date').hour
-    prob_chuva = clima.rain.get('3h')
-    if prob_chuva != None:
         if data not in previsoes or hora < 18:
             previsoes[data] = round(prob_chuva)
+        elif data in previsoes and hora < 18 and previsoes[data] < prob_chuva:
+            previsoes[data] = round(prob_chuva)
+except:
+    pass
 
 
 class SpinnerOptions(SpinnerOption):
@@ -728,7 +732,7 @@ class MyApp(App):
         largura, altura = label.texture_size
 
         while largura > label.width or altura > label.height:
-            label.font_size -= 2
+            label.font_size -= 5
             label.texture_update()
             largura, altura = label.texture_size
 

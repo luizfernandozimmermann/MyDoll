@@ -627,17 +627,23 @@
             BoxLayout:
                 id: previsao_tempo
                 spacing: 5
-                x: self.parent.x + (self.parent.width - self.width) // 2
-                y: self.parent.y + self.parent.height - porcentagem_chance_chuva.texture_size[1] * 2
+                x: self.parent.x + 20
+                y: self.parent.y + self.parent.height - self.parent.height * .3
                 Image:
                     id: imagem_chance_chuva
+                    size: self.parent.parent.height * .3, self.parent.parent.height * .3
+                    size_hint: None, None
                     source: "imagens/nada.png"
+                    allow_stretch: True
                 
                 Label:
                     id: porcentagem_chance_chuva
-                    color: 0, 0, 0, 1
                     bold: True
-                    font_size: 30
+                    height: self.parent.parent.height * .3
+                    size_hint_y: None
+                    font_size: 60
+                    outline_color: 0, 0, 0, 1
+                    outline_width: 3
             
         Botao:
             id: botao_feira_concluir
