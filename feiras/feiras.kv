@@ -650,7 +650,7 @@
             bold: True
             halign: "center"
             color: 1, 1, 1, 1
-            font_size: 60
+            font_size: 55
             on_release: 
                 app.root.ids.gerenciador_telas_principal.get_screen("feiras").ids.feiras_scroll.finalizar_feiras = self.parent.parent.id_feira
                 app.root.ids.gerenciador_telas_principal.get_screen("feiras").ids.gerenciador_feiras.current = "concluir feira"
@@ -734,7 +734,7 @@
         size_hint_x: .58
         halign: "center"
         bold: True
-        font_size: app.ajustar_fonte(50, self.width * .8, self.text)
+        font_size: app.ajustar_fonte(50, self.width * .6, self.text)
         center: self.parent.center
     
     Button:
@@ -780,7 +780,7 @@
                     text: ""
                     center_x: self.parent.center_x
                     
-                    font_size: app.ajustar_fonte(60, self.width * .8, self.text)
+                    font_size: app.ajustar_fonte(60, self.width * .6, self.text)
                     bold: True
 
                 Label:
@@ -788,7 +788,7 @@
                     
                     text: ""
                     center_x: self.parent.center_x
-                    font_size: app.ajustar_fonte(60, self.width * .8, self.text)
+                    font_size: app.ajustar_fonte(60, self.width * .6, self.text)
                     bold: True
                 
                 Label:
@@ -796,7 +796,7 @@
                     
                     text: ""
                     center_x: self.parent.center_x
-                    font_size: app.ajustar_fonte(60, self.width * .8, self.text)
+                    font_size: app.ajustar_fonte(60, self.width * .6, self.text)
                     bold: True
 
             Button:

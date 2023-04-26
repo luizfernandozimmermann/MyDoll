@@ -1,13 +1,16 @@
 <Tela_historico@Screen>:
     name: "historico"
     on_pre_enter:
+        filtro_mes_historico.values = historico_scroll.meses_filtro()
+        filtro_ano_historico.values = historico_scroll.anos_filtro()
         historico_scroll.atualizar()
         historico_feiras_scroll.atualizar()
+        texto_total_historico.text = "TOTAL: R$" + "{:,.2f}".format(historico_scroll.total_vendas(filtro_mes_historico.text, filtro_ano_historico.text))
     BoxLayout:
         orientation: "vertical"
         spacing: 5
         BoxLayout:
-            size_hint_y: 0.15
+            size_hint_y: 0.08
             padding: 30
             spacing: 30
             BoxLayout:
@@ -69,8 +72,27 @@
                         center: self.parent.center
 
         BoxLayout:
-            orientation: "horizontal"
             size_hint_y: 0.1
+            Button:
+                id: texto_total_historico
+                bold: True
+                italic: True
+                text: "TOTAL: R$" + "{:,.2f}".format(historico_scroll.total_vendas(filtro_mes_historico.text, filtro_ano_historico.text))
+                color: 1, 1, 1, 1
+                background_color: 0, 0, 0, 0
+                font_size: 80
+                on_release: 
+                    self.text = "TOTAL: R$" + "{:,.2f}".format(historico_scroll.total_vendas(filtro_mes_historico.text, filtro_ano_historico.text))
+                canvas.before:
+                    Color:
+                        rgba: 1, 36/255, 148/255, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint_y: 0.07
             height: 50
             spacing: 20
             padding: 10
