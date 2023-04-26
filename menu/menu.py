@@ -2,6 +2,15 @@ from kivy.uix.boxlayout import BoxLayout
 from save_and_load import *
 from kivy.app import App
 from kivy.uix.label import Label
+from kivy.uix.screenmanager import Screen
+
+
+class Tela_menu(Screen):
+    def on_touch_move(self, touch):
+        if touch.x + 20 < touch.ox:
+            App.get_running_app().root.resetar_screenmanagers()
+            self.parent.current = "estoque"
+            self.parent.transition.direction = "left"
 
 
 class Menu_proximas_entregas(BoxLayout):

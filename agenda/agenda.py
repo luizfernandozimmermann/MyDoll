@@ -3,6 +3,20 @@ from kivy.uix.label import Label
 from save_and_load import *
 from kivy.app import App
 import datetime
+from kivy.uix.screenmanager import Screen
+
+
+class Tela_agenda(Screen):
+    def on_touch_move(self, touch):
+        if touch.x + 20 < touch.ox:
+            App.get_running_app().root.resetar_screenmanagers()
+            self.parent.transition.direction = "left"
+            self.parent.current = "historico"
+        
+        elif touch.x - 20 > touch.ox:
+            App.get_running_app().root.resetar_screenmanagers()
+            self.parent.transition.direction = "right"
+            self.parent.current = "feiras"
 
 
 class Agenda_scroll(BoxLayout):

@@ -1,9 +1,17 @@
 from kivy.uix.boxlayout import BoxLayout
 from save_and_load import *
-from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.app import App
 from datetime import date
+from kivy.uix.screenmanager import Screen
+
+
+class Tela_financas(Screen):
+    def on_touch_move(self, touch):
+        if touch.x - 20 > touch.ox:
+            App.get_running_app().root.resetar_screenmanagers()
+            self.parent.transition.direction = "right"
+            self.parent.current = "historico"
 
 
 

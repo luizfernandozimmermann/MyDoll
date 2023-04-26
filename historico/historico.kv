@@ -1,6 +1,11 @@
-<Tela_historico@Screen>:
+<Tela_historico>:
     name: "historico"
     on_pre_enter:
+        gerenciador_historico.transition.direction = "right"
+        gerenciador_historico.current = "historico_vendas"
+        botao_produtos_historico.parent.background_color = 1, 36/255, 148/255, 1
+        botao_feiras_historico.parent.background_color = 0, 0, 0, 0.1
+
         filtro_mes_historico.values = historico_scroll.meses_filtro()
         filtro_ano_historico.values = historico_scroll.anos_filtro()
         historico_scroll.atualizar()

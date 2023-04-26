@@ -2,6 +2,20 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.app import App
 from save_and_load import *
+from kivy.uix.screenmanager import Screen
+
+
+class Tela_estoque(Screen):
+    def on_touch_move(self, touch):
+        if touch.x + 20 < touch.ox:
+            App.get_running_app().root.resetar_screenmanagers()
+            self.parent.transition.direction = "left"
+            self.parent.current = "feiras"
+        
+        elif touch.x - 20 > touch.ox:
+            App.get_running_app().root.resetar_screenmanagers()
+            self.parent.transition.direction = "right"
+            self.parent.current = "menu"
 
 
 class Scroll_colecoes(BoxLayout):
