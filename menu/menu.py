@@ -6,12 +6,22 @@ from kivy.uix.screenmanager import Screen
 
 
 class Tela_menu(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.mudar_tela = True
+        
+    def on_touch_up(self, touch):
+        self.mudar_tela = True
+
     def on_touch_move(self, touch):
-        if touch.x + 20 < touch.ox:
+        if touch.oy < self.height * 2 / 3:
+            self.mudar_tela = False
+
+        if touch.x + 50 < touch.ox and self.mudar_tela:
             App.get_running_app().root.resetar_screenmanagers()
             self.parent.current = "estoque"
             self.parent.transition.direction = "left"
-
+    
 
 class Menu_proximas_entregas(BoxLayout):
     def __init__(self, **kwargs):

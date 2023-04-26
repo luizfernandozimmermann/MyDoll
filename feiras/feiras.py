@@ -7,13 +7,23 @@ from kivy.uix.screenmanager import Screen
 
 
 class Tela_feira(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.mudar_tela = True
+        
+    def on_touch_up(self, touch):
+        self.mudar_tela = True
+
     def on_touch_move(self, touch):
-        if touch.x + 20 < touch.ox:
+        if 25 <= touch.oy - touch.y or touch.oy - touch.y <= -25:
+            self.mudar_tela = False
+
+        if touch.x + 50 < touch.ox and self.mudar_tela:
             App.get_running_app().root.resetar_screenmanagers()
             self.parent.transition.direction = "left"
             self.parent.current = "agenda"
         
-        elif touch.x - 20 > touch.ox:
+        elif touch.x - 50 > touch.ox and self.mudar_tela:
             App.get_running_app().root.resetar_screenmanagers()
             self.parent.transition.direction = "right"
             self.parent.current = "estoque"
@@ -245,12 +255,9 @@ class Concluir_feira_scroll(BoxLayout):
             quantidade = 1
         quantidade = int(quantidade)
 
-        print(nome_subproduto)
         if nome_subproduto != "•Escolha um subproduto":
             subproduto = self.conteudo["subprodutos_estoque"][self.ids_subprodutos_levados[nome_subproduto] - 1]
-            print(subproduto)
             produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
-            print(produto)
             preco = produto["preco"] * quantidade
             if metodo_pagamento in ["Pix", "Dinheiro físico"]:
                 preco *= .95
@@ -343,7 +350,7 @@ class Concluir_feira_scroll(BoxLayout):
     def adicionar(self, nome_subproduto, quantidade, descricao, preco, forma_pagamento, id_feira):
         self.conteudo = App.get_running_app().conteudo
 
-        id = self.conteudo["subprodutos_feira"][self.ids_subprodutos_levados[nome_subproduto] - 1]["id_subproduto"]
+        id = self.conteudo["subprodutos_estoque"][self.ids_subprodutos_levados[nome_subproduto] - 1]["id"]
 
         dic = {
             "id": len(self.conteudo["feiras_vendas"]) + 1,
