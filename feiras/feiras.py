@@ -2,7 +2,6 @@ from kivy.uix.boxlayout import BoxLayout
 from save_and_load import *
 from kivy.uix.label import Label
 from kivy.app import App
-from kivy.uix.image import Image
 import datetime
 
 
@@ -232,9 +231,12 @@ class Concluir_feira_scroll(BoxLayout):
             quantidade = 1
         quantidade = int(quantidade)
 
+        print(nome_subproduto)
         if nome_subproduto != "•Escolha um subproduto":
             subproduto = self.conteudo["subprodutos_estoque"][self.ids_subprodutos_levados[nome_subproduto] - 1]
-            produto = self.conteudo["produtos_estoque"][subproduto["id_produto"]]
+            print(subproduto)
+            produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+            print(produto)
             preco = produto["preco"] * quantidade
             if metodo_pagamento in ["Pix", "Dinheiro físico"]:
                 preco *= .95
@@ -301,7 +303,7 @@ class Concluir_feira_scroll(BoxLayout):
                 colecao_estoque = self.conteudo["colecoes_estoque"][produto_estoque["id_colecao"] - 1]
                 nome = colecao_estoque["colecao"] + " " + produto_estoque["produto"] + " " + subproduto_estoque["subproduto"]
                 subprodutos.append(nome)
-                self.ids_subprodutos_levados[nome] = subproduto_feira["id"]
+                self.ids_subprodutos_levados[nome] = subproduto_feira["id_subproduto"]
 
         return subprodutos
 

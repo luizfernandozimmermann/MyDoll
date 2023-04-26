@@ -63,7 +63,9 @@
                         font_size: 70
                         color: 0, 0, 0, 1
                         values: feiras_scroll.colecoes()
-                        on_text: spinner_feira_adicionar_produto.values = feiras_scroll.procurar_produtos(self.text)
+                        on_text: 
+                            spinner_feira_adicionar_produto.values = feiras_scroll.procurar_produtos(self.text)
+                            spinner_feira_adicionar_produto.text = "•Escolha um produto"
 
                     SpinnerDropdown:
                         id: spinner_feira_adicionar_produto
@@ -71,7 +73,10 @@
                         background_color: 0, 0, 0, 0
                         font_size: 70
                         color: 0, 0, 0, 1
-                        on_text: spinner_feira_adicionar_subproduto.values = feiras_scroll.procurar_subprodutos(self.text)
+                        on_text: 
+                            spinner_feira_adicionar_subproduto.values = feiras_scroll.procurar_subprodutos(self.text)
+                            spinner_feira_adicionar_subproduto.text = "•Escolha um subproduto"
+
                         
                     SpinnerDropdown:
                         id: spinner_feira_adicionar_subproduto
@@ -513,8 +518,9 @@
                                     text: "•Escolha um subproduto"
                                     color: 0, 0, 0, 1
                                     values: concluir_feira_scroll.subprodutos_levados_na_feira()
-                                    on_text: preco_subproduto_feira_adicionar_concluir.text = concluir_feira_scroll.preco_subproduto_venda(spinner_feiras_concluir_venda_pagamento.text, self.text, quantidade_subproduto_feira_adicionar_concluir.text)
-
+                                    on_text: 
+                                        preco_subproduto_feira_adicionar_concluir.text = concluir_feira_scroll.preco_subproduto_venda(spinner_feiras_concluir_venda_pagamento.text, self.text, quantidade_subproduto_feira_adicionar_concluir.text)
+                                            
                                 BoxLayout:
                                     TextInput:
                                         id: quantidade_subproduto_feira_adicionar_concluir

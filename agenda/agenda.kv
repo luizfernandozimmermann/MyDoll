@@ -66,7 +66,9 @@
                             font_size: 70
                             color: 0, 0, 0, 1
                             values: agenda_scroll.colecoes()
-                            on_text: spinner_agenda_adicionar_produto.values = agenda_scroll.procurar_produtos(self.text)
+                            on_text: 
+                                spinner_agenda_adicionar_produto.values = agenda_scroll.procurar_produtos(self.text)
+                                spinner_agenda_adicionar_produto.text = "•Escolha um produto"
 
                         SpinnerDropdown:
                             id: spinner_agenda_adicionar_produto
@@ -74,7 +76,9 @@
                             background_color: 0, 0, 0, 0
                             font_size: 70
                             color: 0, 0, 0, 1
-                            on_text: spinner_agenda_adicionar_subproduto.values = agenda_scroll.procurar_subprodutos(self.text)
+                            on_text: 
+                                spinner_agenda_adicionar_subproduto.values = agenda_scroll.procurar_subprodutos(self.text)
+                                spinner_agenda_adicionar_subproduto.text = "•Escolha um subproduto"
 
                         SpinnerDropdown:
                             id: spinner_agenda_adicionar_subproduto
@@ -183,7 +187,9 @@
                             font_size: 70
                             color: 0, 0, 0, 1
                             values: agenda_scroll.colecoes()
-                            on_text: spinner_agenda_editar_produto.values = agenda_scroll.procurar_produtos(self.text)
+                            on_text: 
+                                spinner_agenda_editar_produto.values = agenda_scroll.procurar_produtos(self.text)
+                                spinner_agenda_editar_produto.text = "•Escolha um produto"
                         
                         SpinnerDropdown:
                             id: spinner_agenda_editar_produto
@@ -191,7 +197,9 @@
                             background_color: 0, 0, 0, 0
                             font_size: 70
                             color: 0, 0, 0, 1
-                            on_text: spinner_agenda_editar_subproduto.values = agenda_scroll.procurar_produtos(self.text)
+                            on_text: 
+                                spinner_agenda_editar_subproduto.values = agenda_scroll.procurar_produtos(self.text)
+                                spinner_agenda_editar_subproduto.text = "•Escolha um subproduto"
 
                         SpinnerDropdown:
                             id: spinner_agenda_editar_subproduto
@@ -286,7 +294,7 @@
                         text: "Concluir"
                         on_release: 
                             if dia_agenda_editar_subproduto.text.isnumeric() and mes_agenda_editar_subproduto.text.isnumeric() and ano_agenda_editar_subproduto.text.isnumeric() and quantidade_subproduto_agenda_editar.text.isnumeric(): gerenciador_agenda.current = "principal"
-                            if dia_agenda_editar_subproduto.text.isnumeric() and mes_agenda_editar_subproduto.text.isnumeric() and ano_agenda_editar_subproduto.text.isnumeric() and quantidade_subproduto_agenda_editar.text.isnumeric():agenda_scroll.editar(spinner_agenda_editar_subproduto.text, quantidade_subproduto_agenda_editar.text, descricao_agenda_editar.text, dia_agenda_editar_subproduto.text, mes_agenda_editar_subproduto.text, ano_agenda_editar_subproduto.text)
+                            if dia_agenda_editar_subproduto.text.isnumeric() and mes_agenda_editar_subproduto.text.isnumeric() and ano_agenda_editar_subproduto.text.isnumeric() and quantidade_subproduto_agenda_editar.text.isnumeric():agenda_scroll.editar(spinner_agenda_editar_colecoes.text, spinner_agenda_editar_produto.text, spinner_agenda_editar_subproduto.text, quantidade_subproduto_agenda_editar.text, descricao_agenda_editar.text, dia_agenda_editar_subproduto.text, mes_agenda_editar_subproduto.text, ano_agenda_editar_subproduto.text)
                             gerenciador_agenda.transition.direction = "up"
 
         Screen:
@@ -359,6 +367,8 @@
                         color: 0, 0, 0, 1
                         text: "•Forma de pagamento"
                         values: ["Pix", "Dinheiro físico", "Cartão de crédito", "Cartão de débito"]
+                        on_text: preco_subproduto_compromisso_saber_mais.text =  agenda_scroll.preco_subproduto_venda(self.text)
+
                 BoxLayout:
                     size_hint_y: 0.1
                     Label:

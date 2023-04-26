@@ -26,7 +26,7 @@ class Historico_scroll(BoxLayout):
                 total_vendas += venda["preco_total"]
         
         for venda in vendas_individuais:
-            if filtro_ano in [venda["data_entrega"][:4], "Todos"] and filtro_mes in [venda["data_entrega"], "Todos"]:
+            if filtro_ano in [venda["data_entrega"][:4], "Todos"] and filtro_mes in [venda["data_entrega"][5:7], "Todos"]:
                 total_vendas += venda["preco_total"]
 
         return total_vendas
@@ -157,7 +157,7 @@ class Historico_scroll(BoxLayout):
                         ))
             else:
                 for venda in self.ordem:
-                    if venda["data_entrega"][8:] == mes and venda["data_entrega"][:4] == ano:
+                    if venda["data_entrega"][5:7] == mes and venda["data_entrega"][:4] == ano:
                         subproduto = self.conteudo["subprodutos_estoque"][venda["id_subproduto"] - 1]
                         produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
                         colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]

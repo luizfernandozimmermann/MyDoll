@@ -14,6 +14,18 @@ class Agenda_scroll(BoxLayout):
         self.anos = [str(datetime.date.today().year), str(datetime.date.today().year + 1), str(datetime.date.today().year + 2)]
         self.atualizar()
     
+    def preco_subproduto_venda(self, metodo_pagamento):
+        self.conteudo = App.get_running_app().conteudo
+
+        quantidade_venda = self.conteudo["agenda"][self.mais_informacoes_agenda - 1]
+        subproduto = self.conteudo["subprodutos_estoque"][quantidade_venda["id_subproduto"] - 1]
+        preco_produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]["preco"]
+        quantidade_venda = quantidade_venda["quantidade"]
+        preco_venda = quantidade_venda * preco_produto
+        if metodo_pagamento in ["Pix", "Dinheiro físico"]:
+            return str(preco_venda * .95)
+        return str(preco_venda)
+    
     def procurar_subprodutos(self, produto_nome):
         self.conteudo = App.get_running_app().conteudo
         id = 0
@@ -76,17 +88,27 @@ class Agenda_scroll(BoxLayout):
         salvar(self.conteudo)
         self.atualizar()
 
-    def editar(self, nome, quantidade, descricao, dia, mes, ano):
+    def editar(self, nome_colecao, nome_produto, nome_subproduto, quantidade, descricao, dia, mes, ano):
         self.conteudo = App.get_running_app().conteudo
 
+        for colecao in self.conteudo["colecoes_estoque"]:
+            if colecao["colecao"] == nome_colecao:
+                id_colecao = colecao["id"]
+                break
+
+        for produto in self.conteudo["produtos_estoque"]:
+            if produto["produto"] == nome_produto and produto["id_colecao"] == id_colecao:
+                id_produto = produto["id"]
+                break
+        
         for subproduto in self.conteudo["subprodutos_estoque"]:
-            if subproduto["subproduto"] == nome:
-                id = subproduto["id"]
+            if subproduto["subproduto"] == nome_subproduto and subproduto["id_produto"] == id_produto:
+                id_subproduto = subproduto["id"]
                 break
         
         dic = {
             "id": self.editando_agenda,
-            "id_subproduto": id,
+            "id_subproduto": id_subproduto,
             "quantidade": int(quantidade), 
             "data_entrega": ano + "-" + mes + "-" + dia, 
             "descricao": descricao.strip(),
@@ -110,10 +132,11 @@ class Agenda_scroll(BoxLayout):
             if item["ativo"] == 1:
                 subproduto = self.conteudo["subprodutos_estoque"][item["id_subproduto"] - 1]
                 produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+                colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
                 self.add_widget(Caixa_agenda(
                     id_entrega= item["id"],
                     data= item["data_entrega"],
-                    nome_subproduto= subproduto["subproduto"],
+                    nome_subproduto= colecao["colecao"] + " " + produto["produto"] + " " + subproduto["subproduto"],
                     quantidade= item["quantidade"],
                     preco_produto= produto["preco"],
                     descricao= item["descricao"],
