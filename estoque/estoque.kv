@@ -105,19 +105,57 @@
         Screen:
             on_pre_enter:
                 adicionar_colecoes_texto.text = ""
+                adicionar_colecoes_descricao.text = ""
+                adicionar_colecoes_imagem.source = "imagens/logo.png"
 
             name: "adicionar colecoes"
             BoxLayout:
                 orientation: 'vertical'
                 BoxLayout:
+                    orientation: 'vertical'
                     size_hint_y: 0.85
-                    padding: 50, 150, 50, 150
+                    padding: 20
+                    spacing: 15
+                    BoxLayout:
+                        orientation: "vertical"
+                        Label:
+                            size_hint_y: 0.15
+                            text: "Escolha uma imagem:"
+                            color: 0, 0, 0, 1
+                            bold: True
+                        
+                        AsyncImage:
+                            id: adicionar_colecoes_imagem
+                            source: "imagens/logo.png"
+                            Button:
+                                size: self.parent.size
+                                pos: self.parent.pos
+                                background_color: 0, 0, 0, 0
+                                on_release: 
+                                    app.root.file_chooser(gerenciador_colecoes.current)
+
                     TextInput:
                         size_hint_y: None
                         height: self.font_size + 30
-                        y: (self.parent.height - self.height) // 2
                         id: adicionar_colecoes_texto
                         hint_text: "Nome da coleção"
+                        text: ""
+                        multiline: False
+                        halign: "center"
+                        font_size: 80
+                        background_color: 0, 0, 0, 0
+                        canvas.before:
+                            Color:
+                                rgba: 0, 0, 0, 1
+                            Line:
+                                rectangle: (self.x, self.y, self.width, self.height)
+                                width: 5
+
+                    TextInput:
+                        size_hint_y: None
+                        height: self.font_size + 30
+                        id: adicionar_colecoes_descricao
+                        hint_text: "Descrição"
                         text: ""
                         multiline: False
                         halign: "center"
@@ -143,21 +181,56 @@
                         on_release:
                             gerenciador_colecoes.transition.direction = "up"
                             if adicionar_colecoes_texto.text != "": gerenciador_colecoes.current = "mostrar colecoes"
-                            if adicionar_colecoes_texto.text != "": scroll_colecoes.adicionar_colecao(adicionar_colecoes_texto.text)
+                            if adicionar_colecoes_texto.text != "": scroll_colecoes.adicionar_colecao(adicionar_colecoes_texto.text, adicionar_colecoes_imagem.source, adicionar_colecoes_descricao.text)
         
         Screen:
             name: "editar colecoes"
             BoxLayout:
                 orientation: 'vertical'
                 BoxLayout:
+                    orientation: 'vertical'
                     size_hint_y: 0.85
-                    padding: 50, 150, 50, 150
+                    padding: 20
+                    spacing: 15
+                    BoxLayout:
+                        orientation: "vertical"
+                        Label:
+                            size_hint_y: 0.15
+                            text: "Escolha uma imagem:"
+                            color: 0, 0, 0, 1
+                            bold: True
+                        
+                        AsyncImage:
+                            id: editar_colecoes_imagem
+                            source: "imagens/logo.png"
+                            Button:
+                                size: self.parent.size
+                                pos: self.parent.pos
+                                background_color: 0, 0, 0, 0
+                                on_release: 
+                                    app.root.file_chooser(gerenciador_colecoes.current)
                     TextInput:
                         size_hint_y: None
                         height: self.font_size + 30
-                        y: (self.parent.height - self.height) // 2
                         id: editar_colecoes_texto
                         hint_text: "Nome da coleção"
+                        text: ""
+                        multiline: False
+                        halign: "center"
+                        font_size: 80
+                        background_color: 0, 0, 0, 0
+                        canvas.before:
+                            Color:
+                                rgba: 0, 0, 0, 1
+                            Line:
+                                rectangle: (self.x, self.y, self.width, self.height)
+                                width: 5
+                    
+                    TextInput:
+                        size_hint_y: None
+                        height: self.font_size + 30
+                        id: editar_colecoes_descricao
+                        hint_text: "Descrição"
                         text: ""
                         multiline: False
                         halign: "center"
@@ -190,7 +263,7 @@
                         on_release:
                             gerenciador_colecoes.transition.direction = "up"
                             if editar_colecoes_texto.text != "": gerenciador_colecoes.current = "mostrar colecoes"
-                            if editar_colecoes_texto.text != "": scroll_colecoes.editar_colecao(editar_colecoes_texto.text)
+                            if editar_colecoes_texto.text != "": scroll_colecoes.editar_colecao(editar_colecoes_texto.text, editar_colecoes_imagem.source, editar_colecoes_descricao.text)
 
         Screen:
             name: "tela produtos"
@@ -295,6 +368,7 @@
                         adicionar_produto_imagem.source = "imagens/logo.png"
                         adicionar_produto_nome.text = ""
                         adicionar_produto_preco.text = ""
+                        adicionar_produto_descricao.text = ""
 
                     name: "adicionar produtos"
                     BoxLayout:
@@ -352,6 +426,21 @@
                                         rectangle: (self.x, self.y + self.height - self.font_size - 30 - 10, self.width, self.font_size + 30)
                                         width: 5
 
+                            TextInput:
+                                id: adicionar_produto_descricao
+                                font_size: 80
+                                text: ""
+                                hint_text: "Descrição"
+                                multiline: False
+                                halign: "center"
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: 0, 0, 0, 1
+                                    Line:
+                                        rectangle: (self.x, self.y + self.height - self.font_size - 30 - 10, self.width, self.font_size + 30)
+                                        width: 5
+
                         BoxLayout:
                             size_hint_y: 0.15
                             Botao:
@@ -365,7 +454,7 @@
                                 on_release: 
                                     gerenciador_produtos.transition.direction = "up"
                                     if adicionar_produto_nome.text != "" and adicionar_produto_preco.text != "": gerenciador_produtos.current = "mostrar produtos"
-                                    if adicionar_produto_nome.text != "" and adicionar_produto_preco.text != "": scroll_produtos.adicionar_produto(adicionar_produto_imagem.source, adicionar_produto_nome.text, adicionar_produto_preco.text)
+                                    if adicionar_produto_nome.text != "" and adicionar_produto_preco.text != "": scroll_produtos.adicionar_produto(adicionar_produto_imagem.source, adicionar_produto_nome.text, adicionar_produto_preco.text, adicionar_produto_descricao.text)
 
                 Screen:
                     name: "editar produtos"
@@ -426,6 +515,21 @@
                                         rectangle: (self.x, self.y + self.height - self.font_size - 30 - 10, self.width, self.font_size + 30)
                                         width: 5
 
+                            TextInput:
+                                id: editar_produto_descricao
+                                font_size: 80
+                                text: ""
+                                hint_text: "Descrição"
+                                multiline: False
+                                halign: "center"
+                                background_color: 0, 0, 0, 0
+                                canvas.before:
+                                    Color:
+                                        rgba: 0, 0, 0, 1
+                                    Line:
+                                        rectangle: (self.x, self.y + self.height - self.font_size - 30 - 10, self.width, self.font_size + 30)
+                                        width: 5
+
                         BoxLayout:
                             size_hint_y: 0.15
                             Botao:
@@ -445,7 +549,7 @@
                                 text: "Concluir"
                                 on_release: 
                                     gerenciador_produtos.transition.direction = "up"
-                                    if editar_produto_nome.text != "" and editar_produto_preco.text != "": scroll_produtos.editar_produto(editar_produto_imagem.source, editar_produto_nome.text, editar_produto_preco.text)
+                                    if editar_produto_nome.text != "" and editar_produto_preco.text != "": scroll_produtos.editar_produto(editar_produto_imagem.source, editar_produto_nome.text, editar_produto_preco.text, editar_produto_descricao.text)
                                     if editar_produto_nome.text != "" and editar_produto_preco.text != "": gerenciador_produtos.current = "mostrar produtos"
 
                 Screen:
@@ -767,7 +871,7 @@
             radius: [30,]
     
     bold: True
-    font_size: app.ajustar_fonte(80, self.width * .7, self.text)
+    font_size: app.ajustar_fonte(80, self.width * .6, self.text)
     background_color: (0, 0, 0, 0)
     color: (1, 1, 1, 1)
     on_release: 
@@ -778,6 +882,19 @@
         app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_colecoes.current = "tela produtos"
         app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.pesquisar_produtos.hint_text = "Pesquisar em " + app.conteudo["colecoes_estoque"][app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_colecoes.colecao_selecionada - 1]["colecao"]
         app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.total_produto.text =  "TOTAL: R$" + "{:,.2f}".format(app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.preco_total(app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.pesquisar_produtos.text.strip().lower()))
+
+    AsyncImage:
+        id: imagem_colecao
+        source: ""
+        size_hint: None, None
+        size: self.parent.height * .8, self.parent.height * .8
+        y: self.parent.y + self.parent.height * .1
+        x: self.parent.x *1.5
+        Button:
+            background_color: 0, 0, 0, 0
+            pos: self.parent.pos
+            size: self.parent.size
+            on_release: app.root.copiar_imagem(self.parent)
 
     Image:
         source: "imagens/edit.png"
@@ -794,6 +911,8 @@
                 app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_colecoes.transition.direction = "down"
                 app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.gerenciador_colecoes.current = "editar colecoes"
                 app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_colecoes_texto.text = self.parent.parent.text
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_colecoes_imagem.text = self.parent.parent.imagem
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_colecoes_descricao.text = self.parent.parent.descricao
                 app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_colecoes.editando_colecao_id = self.parent.parent.id_colecao
 
 <Caixa_produto>:
@@ -852,6 +971,7 @@
                 app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_produto_nome.text = app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.produtos[self.parent.parent.id_produto - 1]["produto"]
                 app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_produto_preco.text = str(app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.produtos[self.parent.parent.id_produto - 1]["preco"])
                 app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_produto_imagem.source = app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.produtos[self.parent.parent.id_produto - 1]["imagem"]
+                app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.editar_produto_descricao = self.parent.parent.descricao
                 app.root.ids.gerenciador_telas_principal.get_screen("estoque").ids.scroll_produtos.editando_produto_id = self.parent.parent.id_produto
 
 <Caixa_subproduto>:

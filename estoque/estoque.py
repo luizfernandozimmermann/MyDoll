@@ -40,13 +40,31 @@ class Scroll_colecoes(BoxLayout):
         self.conteudo = App.get_running_app().conteudo
         self.colecoes[self.editando_colecao_id - 1]["ativo"] = 0
 
+        produtos = self.conteudo["produtos_estoque"]
+        subprodutos = self.conteudo["subprodutos_estoque"]
+
+        ids_produtos = []
+
+        for produto in produtos:
+            if produto["id_colecao"] == self.editando_colecao_id:
+                produto["ativo"] = 0
+                ids_produtos.append(produto["id"])
+
+        for subproduto in subprodutos:
+            if subproduto["id_produto"] in ids_produtos:
+                subproduto["ativo"] = 0
+
         self.conteudo["colecoes_estoque"] = self.colecoes
+        self.conteudo["produtos_estoque"] = produtos
+        self.conteudo["subprodutos_estoque"] = subprodutos
         salvar(self.conteudo)
         self.atualizar()
 
-    def editar_colecao(self, texto):
+    def editar_colecao(self, texto, imagem, descricao):
         self.conteudo = App.get_running_app().conteudo
         self.colecoes[self.editando_colecao_id - 1]["colecao"] = texto.strip().capitalize()
+        self.colecoes[self.editando_colecao_id - 1]["imagem"] = imagem
+        self.colecoes[self.editando_colecao_id - 1]["descricao"] = descricao
         self.conteudo["colecoes_estoque"] = self.colecoes
         salvar(self.conteudo)
         self.atualizar()
@@ -77,15 +95,19 @@ class Scroll_colecoes(BoxLayout):
 
         for colecao in self.ordem:
             if colecao["ativo"] == 1 and texto in colecao["colecao"].lower():
-                self.add_widget(Caixa_colecao(text=colecao["colecao"], id_colecao=colecao["id"], width=self.width - self.padding[0] * 2), len(self.children))
+                self.add_widget(Caixa_colecao(text=colecao["colecao"], imagem=colecao["imagem"], descricao=colecao["descricao"], id_colecao=colecao["id"], width=self.width - self.padding[0] * 2), len(self.children))
 
-    def adicionar_colecao(self, texto_colecao):
+    def adicionar_colecao(self, texto_colecao, imagem, descricao):
         self.conteudo = App.get_running_app().conteudo
         texto_colecao = texto_colecao.strip().capitalize()
-        if len(self.colecoes) != 0:
-            self.colecoes.append({"id": self.colecoes[-1]["id"] + 1, "colecao": texto_colecao, "ativo": 1})
-        else:
-            self.colecoes.append({"id": 1, "colecao": texto_colecao, "ativo": 1})
+        self.colecoes.append(
+            {
+                "id": len(self.colecoes) + 1, 
+                "colecao": texto_colecao, 
+                "imagem": imagem,
+                "descricao": descricao,
+                "ativo": 1}
+            )
 
         self.conteudo["colecoes_estoque"] = self.colecoes
         salvar(self.conteudo)
@@ -101,12 +123,15 @@ class Scroll_colecoes(BoxLayout):
         
         for colecao in self.ordem:
             if colecao["ativo"] == 1:
-                self.add_widget(Caixa_colecao(text=colecao["colecao"], id_colecao=colecao["id"], width=self.width - self.padding[0] * 2), len(self.children))
+                self.add_widget(Caixa_colecao(text=colecao["colecao"], imagem=colecao["imagem"], descricao=colecao["descricao"], id_colecao=colecao["id"], width=self.width - self.padding[0] * 2), len(self.children))
 
 class Caixa_colecao(Button):
-    def __init__(self, id_colecao, **kwargs):
+    def __init__(self, imagem, descricao, id_colecao, **kwargs):
         super().__init__(**kwargs)
         self.id_colecao = id_colecao
+        self.imagem = imagem
+        self.ids.imagem_colecao.source = imagem
+        self.descricao = descricao
         self.size_hint_y = None
         self.width = self.width
         self.texture_update()
@@ -133,17 +158,24 @@ class Scroll_produtos(BoxLayout):
             if produto["ativo"] == 1 and texto in produto["produto"].lower() and produto["id_colecao"] == self.colecao_selecionada:
                 preco_formatado = 'R$' + '{:,.2f}'.format(produto['preco'])
                 texto = f"{produto['produto']}\n{preco_formatado}"
-                self.add_widget(Caixa_produto(text=texto, id_produto=produto["id"], imagem=produto["imagem"]), len(self.children))
+                self.add_widget(Caixa_produto(descricao=produto["descricao"], text=texto, id_produto=produto["id"], imagem=produto["imagem"]), len(self.children))
 
     def excluir_produto(self):
         self.conteudo = App.get_running_app().conteudo
         self.produtos[self.editando_produto_id - 1]["ativo"] = 0
 
+        subprodutos = self.conteudo["subprodutos_estoque"]
+
+        for subproduto in subprodutos:
+            if subproduto["id_produto"] == self.editando_produto_id:
+                subproduto["ativo"] = 0
+
         self.conteudo["produtos_estoque"] = self.produtos
+        self.conteudo["subprodutos_estoque"] = subprodutos
         salvar(self.conteudo)
         self.atualizar()
 
-    def editar_produto(self, imagem_produto, nome_produto, preco_produto):
+    def editar_produto(self, imagem_produto, nome_produto, preco_produto, descricao):
         self.conteudo = App.get_running_app().conteudo
         nome_produto = nome_produto.strip()
         nome_produto = nome_produto.replace(nome_produto[0], nome_produto[0].upper(), 1)
@@ -153,6 +185,7 @@ class Scroll_produtos(BoxLayout):
             "imagem": imagem_produto,
             "produto": nome_produto,
             "preco": float(preco_produto),
+            "descricao": descricao,
             "ativo": 1
         }
         self.produtos[self.editando_produto_id - 1] = dic
@@ -160,7 +193,7 @@ class Scroll_produtos(BoxLayout):
         salvar(self.conteudo)
         self.atualizar()
 
-    def adicionar_produto(self, imagem_produto, nome_produto, preco_produto):
+    def adicionar_produto(self, imagem_produto, nome_produto, preco_produto, descricao):
         self.conteudo = App.get_running_app().conteudo
         id_produto = len(self.produtos) + 1
         nome_produto = nome_produto.strip()
@@ -171,6 +204,7 @@ class Scroll_produtos(BoxLayout):
             "imagem": imagem_produto,
             "produto": nome_produto,
             "preco": float(preco_produto),
+            "descricao": descricao,
             "ativo": 1
         }
         self.produtos.append(dic)
@@ -207,13 +241,14 @@ class Scroll_produtos(BoxLayout):
             if produto["ativo"] == 1 and produto["id_colecao"] == colecao:
                 preco_formatado = 'R$' + '{:,.2f}'.format(produto['preco'])
                 texto = f"{produto['produto']}\n{preco_formatado}"
-                self.add_widget(Caixa_produto(text=texto, id_produto=produto["id"], imagem=produto["imagem"]), len(self.children))
+                self.add_widget(Caixa_produto(text=texto, descricao=produto["descricao"], id_produto=produto["id"], imagem=produto["imagem"]), len(self.children))
 
 class Caixa_produto(Button):
-    def __init__(self, id_produto, imagem, **kwargs):
+    def __init__(self, id_produto, imagem, descricao, **kwargs):
         super().__init__(**kwargs)
         self.id_produto = id_produto
         self.size_hint_y = None
+        self.descricao = descricao
         self.width = self.width
         self.ids.imagem_produto.source = imagem
         self.texture_update()

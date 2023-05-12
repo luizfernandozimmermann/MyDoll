@@ -152,7 +152,9 @@ class Geral(BoxLayout):
                     conteudo["colecoes_estoque"].append({
                         "id": item[0],
                         "colecao": item[1],
-                        "ativo": item[2]
+                        "ativo": item[2],
+                        "imagem": item[3],
+                        "descricao": item[4]
                     })
             except:
                 self.ids.administrador_mensagens.text = "Falha ao carregar colecoes_estoque"
@@ -168,7 +170,8 @@ class Geral(BoxLayout):
                         "imagem": item[2],
                         "produto": item[3],
                         "preco": item[4],
-                        "ativo": item[5]
+                        "ativo": item[5],
+                        "descricao": item[6]
                     })
             except:
                 self.ids.administrador_mensagens.text = "Falha ao carregar produtos_estoque"
@@ -402,7 +405,7 @@ class Geral(BoxLayout):
 
             try:
                 for colecao in conteudo["colecoes_estoque"]:
-                    self.sql.execute(f"""INSERT INTO colecoes_estoque (colecao, ativo) VALUES ('{colecao["colecao"]}', {colecao["ativo"]})""")
+                    self.sql.execute(f"INSERT INTO colecoes_estoque (colecao, ativo, descricao, imagem) VALUES ('{colecao['colecao']}', {colecao['ativo']}, '{colecao['descricao']}', '{colecao['imagem']}')")
                 self.ids.administrador_mensagens.text = "Coleções salvas em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Coleções não salvas em SQL"
@@ -410,7 +413,7 @@ class Geral(BoxLayout):
 
             try:
                 for produto in conteudo["produtos_estoque"]:
-                    self.sql.execute(f"INSERT INTO produtos_estoque (id_colecao, imagem, produto, preco, ativo) VALUES ({produto['id_colecao']}, '{produto['imagem']}', '{produto['produto']}', {produto['preco']}, {produto['ativo']})")
+                    self.sql.execute(f"INSERT INTO produtos_estoque (id_colecao, imagem, produto, preco, ativo, descricao) VALUES ({produto['id_colecao']}, '{produto['imagem']}', '{produto['produto']}', {produto['preco']}, {produto['ativo']}, '{produto['descricao']}')")
                 self.ids.administrador_mensagens.text = "Produtos salvos em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Produtos não salvos em SQL"
@@ -693,6 +696,20 @@ class Geral(BoxLayout):
 
         elif lugar == "imagens subprodutos":
             filechooser.open_file(on_selection=self.adicionar_imagens_adicionais_subprodutos)
+
+        elif lugar == "adicionar colecoes":
+            filechooser.open_file(on_selection=self.adicionar_colecao_imagem)
+
+        elif lugar == "editar colecoes":
+            filechooser.open_file(on_selection=self.editar_colecao_imagem)
+
+    def editar_colecao_imagem(self, selecao):
+        if selecao:
+            self.ids.gerenciador_telas_principal.get_screen("estoque").ids.adicionar_colecoes_imagem.source = selecao[0]
+
+    def adicionar_colecao_imagem(self, selecao):
+        if selecao:
+            self.ids.gerenciador_telas_principal.get_screen("estoque").ids.adicionar_colecoes_imagem.source = selecao[0]
     
     def adicionar_imagens_adicionais_subprodutos(self, selecao):
         if selecao:
