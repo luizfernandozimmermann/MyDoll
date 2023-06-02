@@ -769,7 +769,7 @@ class MyApp(App):
         self.wc_conectado = True
 
         """
-        woocommerce
+        woocommerce 
         try:
             self.wcapi = API(
                 url = url,
