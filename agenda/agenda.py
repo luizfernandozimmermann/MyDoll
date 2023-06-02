@@ -54,7 +54,7 @@ class Agenda_scroll(BoxLayout):
         self.conteudo = App.get_running_app().conteudo
         id = 0
         for produto in self.conteudo["produtos_estoque"]:
-            if produto["produto"] == produto_nome and produto["ativo"] == 1:
+            if produto["produto"] == produto_nome and produto["ativo"] == 1 and produto["id_colecao"] == self.id_colecao_procurar:
                 id = produto["id"]
 
         subprodutos = []
@@ -76,6 +76,7 @@ class Agenda_scroll(BoxLayout):
             if produto["ativo"] == 1 and produto["id_colecao"] == id:
                 produtos.append(produto["produto"])
         produtos.sort()
+        self.id_colecao_procurar = id
         return produtos
     
     def colecoes(self):

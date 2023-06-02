@@ -3,6 +3,7 @@ from kivy.uix.button import Button
 from kivy.app import App
 from save_and_load import *
 from kivy.uix.screenmanager import Screen
+from datetime import datetime
 
 
 class Tela_estoque(Screen):
@@ -38,7 +39,10 @@ class Scroll_colecoes(BoxLayout):
 
     def excluir_colecao(self):
         self.conteudo = App.get_running_app().conteudo
+        data = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         self.colecoes[self.editando_colecao_id - 1]["ativo"] = 0
+        self.colecoes[self.editando_colecao_id - 1]["data_edicao"] = data
 
         produtos = self.conteudo["produtos_estoque"]
         subprodutos = self.conteudo["subprodutos_estoque"]
@@ -48,11 +52,13 @@ class Scroll_colecoes(BoxLayout):
         for produto in produtos:
             if produto["id_colecao"] == self.editando_colecao_id:
                 produto["ativo"] = 0
+                produto["data_edicao"] = data
                 ids_produtos.append(produto["id"])
 
         for subproduto in subprodutos:
             if subproduto["id_produto"] in ids_produtos:
                 subproduto["ativo"] = 0
+                subproduto["data_edicao"] = data
 
         self.conteudo["colecoes_estoque"] = self.colecoes
         self.conteudo["produtos_estoque"] = produtos
@@ -65,6 +71,7 @@ class Scroll_colecoes(BoxLayout):
         self.colecoes[self.editando_colecao_id - 1]["colecao"] = texto.strip().capitalize()
         self.colecoes[self.editando_colecao_id - 1]["imagem"] = imagem
         self.colecoes[self.editando_colecao_id - 1]["descricao"] = descricao
+        self.colecoes[self.editando_colecao_id - 1]["data_edicao"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.conteudo["colecoes_estoque"] = self.colecoes
         salvar(self.conteudo)
         self.atualizar()
@@ -100,13 +107,16 @@ class Scroll_colecoes(BoxLayout):
     def adicionar_colecao(self, texto_colecao, imagem, descricao):
         self.conteudo = App.get_running_app().conteudo
         texto_colecao = texto_colecao.strip().capitalize()
+        data = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.colecoes.append(
             {
                 "id": len(self.colecoes) + 1, 
                 "colecao": texto_colecao, 
                 "imagem": imagem,
                 "descricao": descricao,
-                "ativo": 1}
+                "ativo": 1,
+                "data_criacao": data,
+                "data_edicao": data}
             )
 
         self.conteudo["colecoes_estoque"] = self.colecoes
@@ -137,7 +147,7 @@ class Caixa_colecao(Button):
         self.texture_update()
 
 
-class Scroll_produtos(BoxLayout):
+class Scroll_produtos(BoxLayout):   
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.conteudo = App.get_running_app().conteudo
@@ -157,18 +167,23 @@ class Scroll_produtos(BoxLayout):
         for produto in self.ordem:
             if produto["ativo"] == 1 and texto in produto["produto"].lower() and produto["id_colecao"] == self.colecao_selecionada:
                 preco_formatado = 'R$' + '{:,.2f}'.format(produto['preco'])
-                texto = f"{produto['produto']}\n{preco_formatado}"
+                colecao = self.conteudo["colecoes_estoque"][self.colecao_selecionada - 1]
+                texto = f"{colecao['colecao']} - {produto['produto']}\n{preco_formatado}"
                 self.add_widget(Caixa_produto(descricao=produto["descricao"], text=texto, id_produto=produto["id"], imagem=produto["imagem"]), len(self.children))
 
     def excluir_produto(self):
         self.conteudo = App.get_running_app().conteudo
+        data = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         self.produtos[self.editando_produto_id - 1]["ativo"] = 0
+        self.produtos[self.editando_produto_id - 1]["data_edicao"] = data
 
         subprodutos = self.conteudo["subprodutos_estoque"]
 
         for subproduto in subprodutos:
             if subproduto["id_produto"] == self.editando_produto_id:
                 subproduto["ativo"] = 0
+                subproduto["data_edicao"] = data
 
         self.conteudo["produtos_estoque"] = self.produtos
         self.conteudo["subprodutos_estoque"] = subprodutos
@@ -179,6 +194,8 @@ class Scroll_produtos(BoxLayout):
         self.conteudo = App.get_running_app().conteudo
         nome_produto = nome_produto.strip()
         nome_produto = nome_produto.replace(nome_produto[0], nome_produto[0].upper(), 1)
+        data_criacao = self.produtos[self.editando_produto_id - 1]["data_criacao"]
+        data = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         dic = {
             "id": self.editando_produto_id,
             "id_colecao": self.colecao_selecionada,
@@ -186,7 +203,9 @@ class Scroll_produtos(BoxLayout):
             "produto": nome_produto,
             "preco": float(preco_produto),
             "descricao": descricao,
-            "ativo": 1
+            "ativo": 1,
+            "data_criacao": data_criacao,
+            "data_edicao": data
         }
         self.produtos[self.editando_produto_id - 1] = dic
         self.conteudo["produtos_estoque"] = self.produtos
@@ -198,6 +217,7 @@ class Scroll_produtos(BoxLayout):
         id_produto = len(self.produtos) + 1
         nome_produto = nome_produto.strip()
         nome_produto = nome_produto.replace(nome_produto[0], nome_produto[0].upper(), 1)
+        data = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         dic = {
             "id": id_produto,
             "id_colecao": self.colecao_selecionada,
@@ -205,7 +225,9 @@ class Scroll_produtos(BoxLayout):
             "produto": nome_produto,
             "preco": float(preco_produto),
             "descricao": descricao,
-            "ativo": 1
+            "ativo": 1,
+            "data_criacao": data,
+            "data_edicao": data
         }
         self.produtos.append(dic)
         self.conteudo["produtos_estoque"] = self.produtos
@@ -236,11 +258,11 @@ class Scroll_produtos(BoxLayout):
         self.ordem.reverse()
 
         self.clear_widgets(self.children[1:])
-
         for produto in self.ordem:
             if produto["ativo"] == 1 and produto["id_colecao"] == colecao:
                 preco_formatado = 'R$' + '{:,.2f}'.format(produto['preco'])
-                texto = f"{produto['produto']}\n{preco_formatado}"
+                colecao_produto = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
+                texto = f"{colecao_produto['colecao']} - {produto['produto']}\n{preco_formatado}"
                 self.add_widget(Caixa_produto(text=texto, descricao=produto["descricao"], id_produto=produto["id"], imagem=produto["imagem"]), len(self.children))
 
 class Caixa_produto(Button):
@@ -266,7 +288,10 @@ class Scroll_subprodutos(BoxLayout):
 
     def excluir_subproduto(self):
         self.conteudo = App.get_running_app().conteudo
+        data = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
         self.subprodutos[self.editando_subproduto_id - 1]["ativo"] = 0
+        self.subprodutos[self.editando_subproduto_id - 1]["data_edicao"] = data
         self.conteudo["subprodutos_estoque"] = self.subprodutos
         salvar(self.conteudo)
         self.atualizar()
@@ -275,13 +300,17 @@ class Scroll_subprodutos(BoxLayout):
         self.conteudo = App.get_running_app().conteudo
         nome_subproduto = nome_subproduto.strip()
         nome_subproduto = nome_subproduto.replace(nome_subproduto[0], nome_subproduto[0].upper(), 1)
+        data_criacao = self.subprodutos[self.editando_subproduto_id - 1]["data_criacao"]
+        data = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         dic = {
             "id": self.editando_subproduto_id,
             "id_produto": self.produto_selecionado,
             "subproduto": nome_subproduto,
             "quantidade": int(quantidade_subproduto),
             "imagem": imagem_subproduto,
-            "ativo": 1
+            "ativo": 1,
+            "data_criacao": data_criacao,
+            "data_edicao": data
         }
 
         self.subprodutos[self.editando_subproduto_id - 1] = dic
@@ -293,13 +322,16 @@ class Scroll_subprodutos(BoxLayout):
         self.conteudo = App.get_running_app().conteudo
         nome_subproduto = nome_subproduto.strip()
         nome_subproduto = nome_subproduto.replace(nome_subproduto[0], nome_subproduto[0].upper(), 1)
+        data = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         dic = {
             "id": len(self.subprodutos) + 1,
             "id_produto": self.produto_selecionado,
             "subproduto": nome_subproduto,
             "quantidade": int(quantidade_subproduto),
             "imagem": imagem_subproduto,
-            "ativo": 1
+            "ativo": 1,
+            "data_criacao": data,
+            "data_edicao": data
         }
 
         self.subprodutos.append(dic)
@@ -317,7 +349,9 @@ class Scroll_subprodutos(BoxLayout):
 
         for subproduto in self.ordem:
             if subproduto["ativo"] == 1 and texto in subproduto["subproduto"].lower() and subproduto["id_produto"] == self.produto_selecionado:
-                texto = f"{subproduto['subproduto']}\n{subproduto['quantidade']} unidades"
+                produto = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+                colecao = self.conteudo["colecoes_estoque"][produto["id_colecao"] - 1]
+                texto = f"{colecao['colecao']} - {produto['produto']} - {subproduto['subproduto']}\n{subproduto['quantidade']} unidades"
                 self.add_widget(Caixa_subproduto(id_subproduto=subproduto["id"], imagem=subproduto["imagem"], text=texto), len(self.children))
 
     def preco_total(self, texto=""):
@@ -347,7 +381,9 @@ class Scroll_subprodutos(BoxLayout):
         self.ordem.reverse()
         for subproduto in self.ordem:
             if subproduto["ativo"] == 1 and subproduto["id_produto"] == produto:
-                texto = f"{subproduto['subproduto']}\n{subproduto['quantidade']} unidades"
+                produto_estoque = self.conteudo["produtos_estoque"][subproduto["id_produto"] - 1]
+                colecao = self.conteudo["colecoes_estoque"][produto_estoque["id_colecao"] - 1]
+                texto = f"{colecao['colecao']} - {produto_estoque['produto']} - {subproduto['subproduto']}\n{subproduto['quantidade']} unidades"
                 self.add_widget(Caixa_subproduto(id_subproduto=subproduto["id"], imagem=subproduto["imagem"], text=texto), len(self.children))
 
 class Caixa_subproduto(Button):
@@ -358,6 +394,7 @@ class Caixa_subproduto(Button):
         self.width = self.width
         self.ids.imagem_produto.source = imagem
         self.texture_update()
+
 
 
 class Scroll_imagens_subprodutos(BoxLayout):
@@ -389,11 +426,14 @@ class Scroll_imagens_subprodutos(BoxLayout):
 
     def adicionar(self, imagem):
         self.conteudo = App.get_running_app().conteudo
+        data = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         dic = {
             "id": len(self.conteudo["imagens_subprodutos_estoque"]) + 1,
             "imagem": imagem,
             "id_subproduto": self.id_subproduto,
-            "ativo": 1
+            "ativo": 1,
+            "data_criacao": data,
+            "data_edicao": data
         }
         self.conteudo["imagens_subprodutos_estoque"].append(dic)
         salvar(self.conteudo)
@@ -401,11 +441,12 @@ class Scroll_imagens_subprodutos(BoxLayout):
 
     def excluir(self, id):
         self.conteudo = App.get_running_app().conteudo
+        data = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         self.conteudo["imagens_subprodutos_estoque"][id - 1]["ativo"] = 0
+        self.conteudo["imagens_subprodutos_estoque"][id - 1]["data_edicao"] = data
         salvar(self.conteudo)
         self.atualizar()
-
 
 class Caixa_imagens_subprodutos(BoxLayout):
     def __init__(self, id, imagem, id_subproduto, **kwargs):

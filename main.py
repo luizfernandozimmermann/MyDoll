@@ -32,6 +32,10 @@ Window.softinput_mode = "below_target"
 from kivy.lang.builder import Builder
 Builder.load_file('main.kv')
 
+
+#from woocommerce import API
+
+
 conexao_sql = carregar("sqlconector")
 host = conexao_sql["host"]
 user = conexao_sql["user"]
@@ -47,6 +51,9 @@ previsoes = {}
 cidade = previsoes_data["cidade"]
 chave = previsoes_data["chave"]
 
+
+"""
+woocommerce
 try:
     resposta = requests.get(f"http://api.openweathermap.org/data/2.5/forecast?q={cidade}&appid={chave}")
 
@@ -67,7 +74,7 @@ try:
                 previsoes[data] = round(prob_chuva)
 except:
     pass
-
+"""
 
 class SpinnerOptions(SpinnerOption):
     def __init__(self, **kwargs):
@@ -154,9 +161,11 @@ class Geral(BoxLayout):
                         "colecao": item[1],
                         "ativo": item[2],
                         "imagem": item[3],
-                        "descricao": item[4]
+                        "descricao": item[4],
+                        "data_criacao": str(item[5]),
+                        "data_edicao": str(item[6])
                     })
-            except:
+            except Exception as e:
                 self.ids.administrador_mensagens.text = "Falha ao carregar colecoes_estoque"
                 return
 
@@ -171,7 +180,9 @@ class Geral(BoxLayout):
                         "produto": item[3],
                         "preco": item[4],
                         "ativo": item[5],
-                        "descricao": item[6]
+                        "descricao": item[6],
+                        "data_criacao": str(item[7]),
+                        "data_edicao": str(item[8])
                     })
             except:
                 self.ids.administrador_mensagens.text = "Falha ao carregar produtos_estoque"
@@ -187,7 +198,9 @@ class Geral(BoxLayout):
                         "imagem": item[2],
                         "subproduto": item[3],
                         "quantidade": item[4],
-                        "ativo": item[5]
+                        "ativo": item[5],
+                        "data_criacao": str(item[6]),
+                        "data_edicao": str(item[7])
                     })
             except:
                 self.ids.administrador_mensagens.text = "Falha ao carregar subprodutos_estoque"
@@ -368,7 +381,9 @@ class Geral(BoxLayout):
                         "id": item[0],
                         "imagem": item[1],
                         "id_subproduto": item[2],
-                        "ativo": item[3]
+                        "ativo": item[3],
+                        "data_criacao": str(item[4]),
+                        "data_edicao": str(item[5])
                     })
             except:
                 self.ids.administrador_mensagens.text = "Falha ao carregar imagens_subprodutos_estoque"
@@ -405,7 +420,8 @@ class Geral(BoxLayout):
 
             try:
                 for colecao in conteudo["colecoes_estoque"]:
-                    self.sql.execute(f"INSERT INTO colecoes_estoque (colecao, ativo, descricao, imagem) VALUES ('{colecao['colecao']}', {colecao['ativo']}, '{colecao['descricao']}', '{colecao['imagem']}')")
+                    self.sql.execute(f"""INSERT INTO colecoes_estoque (colecao, ativo, descricao, imagem, data_criacao, data_edicao) VALUES 
+                    ('{colecao['colecao']}', {colecao['ativo']}, '{colecao['descricao']}', '{colecao['imagem']}', '{colecao['data_criacao']}', '{colecao['data_edicao']}')""")
                 self.ids.administrador_mensagens.text = "Coleções salvas em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Coleções não salvas em SQL"
@@ -413,7 +429,8 @@ class Geral(BoxLayout):
 
             try:
                 for produto in conteudo["produtos_estoque"]:
-                    self.sql.execute(f"INSERT INTO produtos_estoque (id_colecao, imagem, produto, preco, ativo, descricao) VALUES ({produto['id_colecao']}, '{produto['imagem']}', '{produto['produto']}', {produto['preco']}, {produto['ativo']}, '{produto['descricao']}')")
+                    self.sql.execute(f"""INSERT INTO produtos_estoque (id_colecao, imagem, produto, preco, ativo, descricao, data_criacao, data_edicao) VALUES 
+                    ({produto['id_colecao']}, '{produto['imagem']}', '{produto['produto']}', {produto['preco']}, {produto['ativo']}, '{produto['descricao']}', '{produto['data_criacao']}', '{produto['data_edicao']}')""")
                 self.ids.administrador_mensagens.text = "Produtos salvos em SQL"
             except:
                 self.ids.administrador_mensagens.text = "Produtos não salvos em SQL"
@@ -422,11 +439,11 @@ class Geral(BoxLayout):
             try:
                 for subproduto in conteudo["subprodutos_estoque"]:
                     self.sql.execute(
-                        f"""INSERT INTO subprodutos_estoque (id_produto, imagem, subproduto, quantidade, ativo) VALUES
-                        ({subproduto["id_produto"]}, '{subproduto["imagem"]}', '{subproduto["subproduto"]}', {subproduto["quantidade"]}, {subproduto["ativo"]})"""
+                        f"""INSERT INTO subprodutos_estoque (id_produto, imagem, subproduto, quantidade, ativo, data_criacao, data_edicao) VALUES
+                        ({subproduto["id_produto"]}, '{subproduto["imagem"]}', '{subproduto["subproduto"]}', {subproduto["quantidade"]}, {subproduto["ativo"]}, '{subproduto["data_criacao"]}', '{subproduto["data_edicao"]}')"""
                     )
                 self.ids.administrador_mensagens.text = "Subprodutos salvos em SQL"
-            except:
+            except Exception as e:
                 self.ids.administrador_mensagens.text = "Subprodutos não salvos em SQL"
                 return
 
@@ -543,8 +560,8 @@ class Geral(BoxLayout):
             try:
                 for imagens_subprodutos_estoque in conteudo["imagens_subprodutos_estoque"]:
                     self.sql.execute(
-                        f"""INSERT INTO imagens_subprodutos_estoque (imagem, id_subproduto, ativo) VALUES
-                        ('{imagens_subprodutos_estoque["imagem"]}', {imagens_subprodutos_estoque["id_subproduto"]}, {imagens_subprodutos_estoque["ativo"]})"""
+                        f"""INSERT INTO imagens_subprodutos_estoque (imagem, id_subproduto, ativo, data_criacao, data_edicao) VALUES
+                        ('{imagens_subprodutos_estoque["imagem"]}', {imagens_subprodutos_estoque["id_subproduto"]}, {imagens_subprodutos_estoque["ativo"]}), '{imagens_subprodutos_estoque["data_criacao"]}', '{imagens_subprodutos_estoque["data_edicao"]}'"""
                     )
                     self.ids.administrador_mensagens.text = "Imagens subprodutos estoque salvo em SQL"
             except:
@@ -742,7 +759,81 @@ class MyApp(App):
         self.center_x = Window.center[0]
         self.popup = Popup(title='Imagens copiadas!', title_align="center", title_size=70,
                            separator_color=[0, 0, 0, 0],
-    size_hint=(None, None), size=(700, 170), separator_height=0)
+        size_hint=(None, None), size=(700, 170), separator_height=0)
+
+        informacoes_api = carregar("woocommerce")
+        url = informacoes_api["url"]
+        consumer_key = informacoes_api["consumer_key"]
+        consumer_secret = informacoes_api["consumer_secret"]
+
+        self.wc_conectado = True
+
+        """
+        woocommerce
+        try:
+            self.wcapi = API(
+                url = url,
+                consumer_key = consumer_key,
+                consumer_secret = consumer_secret,
+                timeout=15
+            )
+
+            self.params = {
+                'per_page': 100
+            }
+
+            self.categorias = self.wcapi.get("products/categories", params=self.params).json()
+            self.produtos = self.wcapi.get("products/categories", params=self.params).json()
+            self
+
+            for pos, afazer in enumerate(informacoes_api["todo"]):
+                tipo = afazer["tipo"]
+                conteudo = afazer["conteudo"]
+                if tipo == "produto":
+                    self.enviar_produto_site(conteudo)
+                elif tipo == "categoria":
+                    self.enviar_categoria_site(conteudo)
+                elif tipo == "variante":
+                    self.enviar_variante_site(conteudo)
+                elif tipo == "imagens":
+                    self.enviar_imagens_site(conteudo)
+
+                informacoes_api["todo"].pop(pos)
+            salvar(informacoes_api, "woocommerce")
+        except:
+            self.wc_conectado = False
+        """
+            
+    def enviar_site(self, tipo, conteudo):
+        if self.wc_conectado:
+            if tipo == "produto":
+                self.enviar_produto_site(conteudo)
+            elif tipo == "categoria":
+                self.enviar_categoria_site(conteudo)
+            elif tipo == "variante":
+                self.enviar_variante_site(conteudo)
+            elif tipo == "imagens":
+                self.enviar_imagens_site(conteudo)
+
+        else:
+            conteudo = carregar("woocommerce")
+            conteudo["todo"].append({
+                "tipo": tipo,
+                "conteudo": conteudo
+            })
+            salvar(conteudo, "woocommerce")
+
+    def enviar_imagens_site(self, conteudo):
+        pass
+
+    def enviar_variante_site(self, conteudo):
+        pass
+
+    def enviar_categoria_site(self, conteudo):
+        pass
+
+    def enviar_produto_site(self, conteudo):
+        pass
         
     def ajustar_fonte(self, tamanho_fonte, largura, texto):
         label = Label(font_size=tamanho_fonte, width=largura, text=texto)
@@ -756,8 +847,7 @@ class MyApp(App):
 
         label.font_size -= 1
         return label.font_size
-        
-    
+     
     def mostrar_popup(self):
         self.popup.open()
 
